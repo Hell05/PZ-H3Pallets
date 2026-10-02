@@ -1,0 +1,21 @@
+module Base
+{
+    xuiSkin default
+    {
+        entity ES_H3Pallet
+        {
+            LuaWindowClass = ISEntityWindow,
+            DisplayName = Pallet,
+            Icon = Item_EmptyPallet,
+        }
+    }
+    xuiSkin default
+    {
+        entity ES_H3GoldPallet
+        {
+            LuaWindowClass = ISEntityWindow,
+            DisplayName = Gold Pallet,
+            Icon = Item_Ingot_Gold,
+        }
+    }
+}

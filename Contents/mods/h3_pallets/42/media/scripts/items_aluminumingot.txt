@@ -1,0 +1,14 @@
+module Base
+{
+    item AluminumIngot
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        Weight = 6.0,
+        WeightEmpty = 0.01,
+        Icon = Ingot_Aluminum,
+        StaticModel = AluminumIngot,
+        WorldStaticModel = AluminumIngot,
+        Tags = base:hasmetal;base:aluminum;base:ingot,
+    }
+}

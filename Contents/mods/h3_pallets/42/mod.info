@@ -1,0 +1,9 @@
+id=h3_pallets
+name=H3 Pallets
+description=Load items onto pallets!
+poster=H3palletsposter.png
+icon=H3icon.png
+tags=Build 42
+versionMin=42.0
+pack=h3_tiles
+tiledef=h3_tiledef 3024

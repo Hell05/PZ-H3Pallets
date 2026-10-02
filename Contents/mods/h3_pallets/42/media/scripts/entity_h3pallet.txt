@@ -1,0 +1,36 @@
+module Base
+{
+    entity H3Pallet
+    {
+        component UiConfig
+        {
+            xuiSkin = default, entityStyle = ES_H3Pallet, uiEnabled = false,
+        }
+        component ContextMenuConfig
+        {
+            contextEntry { menu = H3InteractPallet, customSubmenu = H3_ContextMenuCode.InteractPallet, }
+        }
+        component SpriteConfig
+        {
+            isProp = true,
+            face SINGLE { layer { row = construction_01_5, } }
+        }
+
+        component CraftRecipe
+        {
+            timedAction = BuildLowHammer,
+            time = 50,
+            SkillRequired = Woodwork:1,
+            xpAward = Woodwork:10,
+            category = Furniture,
+            Tags = Carpentry;Furniture,
+            Tooltip = Tooltip_H3_PalletEmptyTooltip,
+            inputs
+            {
+                item 1 tags[base:hammer] mode:keep flags[Prop1;MayDegradeVeryLight],
+                item 6 [Base.Plank],
+                item 16 [Base.Nails],
+            }
+        }
+    }
+}

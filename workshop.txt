@@ -1,0 +1,10 @@
+version=1
+id=
+title=H3 Pallets
+description=Load items onto pallets!
+description=
+description=This mod was created primarily for SpaghettiZ's Bolognese server.
+description=
+description=Join Bolognese here - https://discord.gg/fhbA3vnrr9
+tags=Build 42;Multiplayer;QoL
+visibility=unlisted
