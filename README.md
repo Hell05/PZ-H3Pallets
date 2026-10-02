@@ -29,4 +29,5 @@ this needs to create a new entry point for the client context menu as well so we
 This mod was created primarily for SpaghettiZ's Bolognese server but anyone is welcome to use it and repack it in their own server mods.
 
 Join Bolognese here - https://discord.gg/fhbA3vnrr9
+
 Workshop link - 
