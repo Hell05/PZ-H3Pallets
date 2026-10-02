@@ -1,5 +1,8 @@
+-- ============================================================================
+-- Define pallet items and their sprite / stage amounts here
+-- ============================================================================
 local emptyPallet = nil
-local materials = {
+local items = {
     {
         item = "Base.SteelIngot",
         icon = "Item_Ingot_Steel.png",
@@ -550,4 +553,4 @@ local materials = {
     },
 }
 
-return materials
+return items

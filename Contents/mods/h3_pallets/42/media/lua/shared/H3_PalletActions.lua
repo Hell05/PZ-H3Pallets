@@ -72,6 +72,11 @@ function H3_PlayerRequiredItems(player, itemType, delta)
     return count
 end
 
+
+-- ============================================================================
+-- Vanilla ISTakeBricks player handling
+-- ============================================================================
+
 function H3_InteractPallet:isValid()
     if not self.pallet:isExistInTheWorld() then
         return false
@@ -107,6 +112,10 @@ function H3_InteractPallet:perform()
     -- needed to remove from queue / start next.
     ISBaseTimedAction.perform(self);
 end
+
+-- ============================================================================
+-- Main logic
+-- ============================================================================
 
 local function GetRequiredItems(player, itemType, delta, amount)
     local inventoryItems = {}
@@ -227,17 +236,18 @@ function H3_InteractPallet:complete()
     local movableData = modData.movableData or {}
     modData.movableData = movableData
 
-    -- update moveableData
+    -- update moveableData (this is what travels with the moveable Item when picked up)
     movableData.H3_itemCount = (movableData.H3_itemCount or 0) + self.amount
     movableData.H3_itemType = self.item
+    movableData.H3_itemDelta = self.delta
     movableData.H3_overlaySprite = self.overlay
 
     if movableData.H3_itemCount == 0 then
         movableData.H3_itemType = nil
         movableData.H3_overlaySprite = nil
+        movableData.H3_itemDelta = nil
     end
 
-    print("Transmitting modData")
     self.pallet:transmitModData()
     return true
 end

@@ -12,8 +12,10 @@ Items stackable on pallets:
 - Cash
 - Bricks
 
+Done:
+- Fix propane tanks so they use delta again
+
 To Do:
-- Fix propane tanks so they use delta again (need to check)
 - Scale down Tires texture
 - Fix Tires (multi item, condition etc) ModData I guess
 - Ammo Pallets
@@ -22,3 +24,9 @@ To Do:
 
 Need to branch to revert to old code using sprites instead of overlaysprites for moveables to be correct
 this needs to create a new entry point for the client context menu as well so we dont have to define entities for every sprite
+
+
+This mod was created primarily for SpaghettiZ's Bolognese server but anyone is welcome to use it and repack it in their own server mods.
+
+Join Bolognese here - https://discord.gg/fhbA3vnrr9
+Workshop link - https://steamcommunity.com/sharedfiles/filedetails/?id=3783669219

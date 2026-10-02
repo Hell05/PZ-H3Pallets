@@ -52,14 +52,17 @@ local function GetHighestAvailableStage(available, stages, palletItemCount)
     return highestStage
 end
 
-local function GetItemsTableForPallet(itemType)
+local function GetItemsTableForPallet(itemType, itemDelta)
     if not itemType then
         return lookupTable
     end
 
     for _, data in ipairs(lookupTable) do
+
         if itemType == data.item then
-            return {data}
+            if itemDelta == data.useDelta then
+                return {data}
+            end
         end
     end
 
@@ -215,6 +218,7 @@ function H3_ContextMenuCode.InteractPallet(context, param)
     local pallet = param.entity
     local player = param.playerObj
     local itemType = nil
+    local itemDelta = nil
     local palletItemCount = 0
 
     local modData = pallet:getModData()
@@ -222,14 +226,16 @@ function H3_ContextMenuCode.InteractPallet(context, param)
 
     if movableData then
         itemType = movableData.H3_itemType or nil
+        itemDelta = movableData.H3_itemDelta or nil
         palletItemCount = movableData.H3_itemCount or 0
     end
 
-    local itemsTable = GetItemsTableForPallet(itemType)
+    local itemsTable = GetItemsTableForPallet(itemType, itemDelta)
 
     print("H3:",
         "  Type: ", movableData and movableData.H3_itemType,
         "  Count: ", movableData and movableData.H3_itemCount,
+        "  Delta: ", movableData and movableData.H3_itemDelta,
         "  Sprite: ", movableData and movableData.H3_overlaySprite)
 
     local sprite = pallet:getSprite()
