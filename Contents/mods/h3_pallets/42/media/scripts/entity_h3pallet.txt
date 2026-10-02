@@ -6,10 +6,6 @@ module Base
         {
             xuiSkin = default, entityStyle = ES_H3Pallet, uiEnabled = false,
         }
-        component ContextMenuConfig
-        {
-            contextEntry { menu = H3InteractPallet, customSubmenu = H3_ContextMenuCode.InteractPallet, }
-        }
         component SpriteConfig
         {
             isProp = true,

@@ -98,7 +98,7 @@ local function UI_CreateItemOption(subMenu, player, entity, data, stage, mode, a
 end
 
 -- PalletMenu -> Add/Remove subMenu creator
-local function UI_GetOrCreateSubMenu(parentMenu, subMenus, menuName)
+local function UI_GetOrCreateSubMenu(parentMenu, subMenus, menuName, iconPath)
     if not parentMenu then return end
 
     local subMenu = subMenus[menuName]
@@ -107,6 +107,10 @@ local function UI_GetOrCreateSubMenu(parentMenu, subMenus, menuName)
         local displayText = getText(textKey)
 
         local option = parentMenu:addOption(displayText)
+        if iconPath then
+            option.iconTexture = getTexture(iconPath)
+        end
+
         subMenu = ISContextMenu:getNew(parentMenu)
         parentMenu:addSubMenu(option, subMenu)
 
@@ -213,10 +217,7 @@ function H3_ContextMenuCode.RemoveItem(character, entity, overlaySprite, item, a
 end
 
 -- main pallet interaction handler that all pallets call from entity
-function H3_ContextMenuCode.InteractPallet(context, param)
-    local option = param.option
-    local pallet = param.entity
-    local player = param.playerObj
+function H3_ContextMenuCode.InteractPallet(context, player, pallet)
     local itemType = nil
     local itemDelta = nil
     local palletItemCount = 0
@@ -246,50 +247,39 @@ function H3_ContextMenuCode.InteractPallet(context, param)
     print("Overlay sprite: " .. tostring(overlay and overlay:getName()))
 
     -- create the main context option for the pallet
-    option.iconTexture = getTexture("media/textures/Item_EmptyPallet.png")
-    local palletMenu = ISContextMenu:getNew(context)
-    context:addSubMenu(option, palletMenu)
+    local palletMenu = UI_GetOrCreateSubMenu(context, {}, "H3InteractPallet", "media/textures/Item_EmptyPallet.png")
 
     ConstructPalletMenu(palletMenu, pallet, player, itemsTable, palletItemCount)
 end
 
---[[
-Events.OnPreFillWorldObjectContextMenu.Add(function(player, context, worldobjects, test)
-    if test then return end
-    local param = {
-        player = getSpecificPlayer(player),
-        option = "PalletMenu",
-        worldobjects = worldobjects,
-    }
+-- executes OnFillWorldObjectContextMenu and calls H3_ContextMenuCode.InteractPallet if the square has eligble sprite
+local function onRightClick(playerID, context, worldobjects, test)
+    if not playerID or not context or not worldobjects or test then return end
 
-    -- worldobjects contains the IsoObjects on the clicked square
+    local player = getSpecificPlayer(playerID)
     for _, object in ipairs(worldobjects) do
         if object and object:getSquare() then
             local square = object:getSquare()
-
-            -- inspect objects on this square
             local objects = square:getObjects()
-
             for i = 0, objects:size() - 1 do
-                local obj = objects:get(i)
 
+                local obj = objects:get(i)
                 if obj then
                     local sprite = obj:getSprite()
-
                     if sprite then
                         local spriteName = sprite:getName()
+                        if spriteName:find("h3_pallet") or spriteName:find("construction_01_5") then
+                            print("name: ", spriteName)
 
-                        -- Check whether this is one of your pallet sprites
-                        if H3_IsPalletSprite(spriteName) then
-                            H3_AddPalletContextMenu(
-                                player,
-                                context,
-                                obj
-                            )
+                            H3_ContextMenuCode.InteractPallet(context, player, obj)
+                            return
                         end
                     end
                 end
             end
         end
     end
-end) --]]
+
+end
+
+Events.OnFillWorldObjectContextMenu.Add(onRightClick)

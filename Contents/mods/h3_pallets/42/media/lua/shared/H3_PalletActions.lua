@@ -72,7 +72,6 @@ function H3_PlayerRequiredItems(player, itemType, delta)
     return count
 end
 
-
 -- ============================================================================
 -- Vanilla ISTakeBricks player handling
 -- ============================================================================

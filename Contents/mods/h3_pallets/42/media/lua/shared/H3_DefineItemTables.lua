@@ -1,7 +1,7 @@
 -- ============================================================================
 -- Define pallet items and their sprite / stage amounts here
 -- ============================================================================
-local emptyPallet = nil
+local emptyPallet = "construction_01_5"
 local items = {
     {
         item = "Base.SteelIngot",

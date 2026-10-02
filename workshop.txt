@@ -6,5 +6,6 @@ description=
 description=This mod was created primarily for SpaghettiZ's Bolognese server.
 description=
 description=Join Bolognese here - https://discord.gg/fhbA3vnrr9
+description=Github link - https://github.com/Hell05/PZ-H3Pallets
 tags=Build 42;Multiplayer;QoL
 visibility=unlisted
