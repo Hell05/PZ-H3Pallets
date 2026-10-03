@@ -8,7 +8,6 @@ module Base
         }
         component SpriteConfig
         {
-            isProp = true,
             face SINGLE { layer { row = construction_01_5, } }
         }
 
@@ -18,8 +17,7 @@ module Base
             time = 50,
             SkillRequired = Woodwork:1,
             xpAward = Woodwork:10,
-            category = Furniture,
-            Tags = Carpentry;Furniture,
+            category = H3_Storage,
             Tooltip = Tooltip_H3_PalletEmptyTooltip,
             inputs
             {

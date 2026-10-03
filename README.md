@@ -12,15 +12,18 @@ Items stackable on pallets:
 - Cash
 - Bricks
 
-Done:
-- Fix propane tanks so they use delta again
+In Progress:
+- revert to setSprite() instead of setOverlaySprite()
+- Read in vanilla pallet for brick and gold again
+- Fix propane tanks so they use ModData
+- Tires (condition) ModData
 
 To Do:
+- multi item using tag functionality
 - Scale down Tires texture
-- Fix Tires (multi item, condition etc) ModData I guess
 - Ammo Pallets
 - Charcoal Pallet
-- Read in vanilla pallet for brick and gold again
+- Bricks (needs more sprites)
 
 Need to branch to revert to old code using sprites instead of overlaysprites for moveables to be correct
 this needs to create a new entry point for the client context menu as well so we dont have to define entities for every sprite
