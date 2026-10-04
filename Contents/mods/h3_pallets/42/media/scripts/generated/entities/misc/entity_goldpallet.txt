@@ -8,10 +8,6 @@ module Base
             entityStyle = ES_H3GoldPallet,
             uiEnabled = false,
         }
-        component ContextMenuConfig
-        {
-            contextEntry { menu = H3InteractPallet, customSubmenu = H3_ContextMenuCode.InteractPallet, }
-        }
         component SpriteConfig
         {
             face SINGLE

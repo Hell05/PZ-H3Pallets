@@ -6,13 +6,8 @@ module Base
         {
             xuiSkin = default, entityStyle = ES_H3Pallet, uiEnabled = false,
         }
-        component ContextMenuConfig
-        {
-            contextEntry { menu = H3InteractPallet, customSubmenu = H3_ContextMenuCode.InteractPallet, }
-        }
         component SpriteConfig
         {
-            isProp = true,
             face SINGLE { layer { row = construction_01_5, } }
         }
 
@@ -22,8 +17,7 @@ module Base
             time = 50,
             SkillRequired = Woodwork:1,
             xpAward = Woodwork:10,
-            category = Furniture,
-            Tags = Carpentry;Furniture,
+            category = H3_Storage,
             Tooltip = Tooltip_H3_PalletEmptyTooltip,
             inputs
             {

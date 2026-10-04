@@ -1,22 +1,27 @@
 {
-    "ContextMenu_H3InteractPallet": "Pallet",
+    "ContextMenu_H3_InteractPallet": "Pallet",
 
-    "ContextMenu_H3PalletCategory_Add_Ingot": "Add Ingots",
-    "ContextMenu_H3PalletCategory_Add_PropaneTank": "Add Propane Tanks",
-    "ContextMenu_H3PalletCategory_Add_Material": "Add Materials",
-    "ContextMenu_H3PalletCategory_Add_Tire": "Add Tires",
-    "ContextMenu_H3PalletCategory_Add_Money": "Add Money Bundles",
+    "ContextMenu_H3_PalletCategory_Add_Ingot": "Add Ingots",
+    "ContextMenu_H3_PalletCategory_Add_PropaneTank": "Add Propane Tanks",
+    "ContextMenu_H3_PalletCategory_Add_Material": "Add Materials",
+    "ContextMenu_H3_PalletCategory_Add_Tire": "Add Tires",
+    "ContextMenu_H3_PalletCategory_Add_Money": "Add Money Bundles",
 
-    "ContextMenu_H3PalletAction_Add": "Add",
-    "ContextMenu_H3PalletAction_Remove": "Remove",
+    "ContextMenu_H3_PalletAction_Add": "Add",
+    "ContextMenu_H3_PalletAction_Remove": "Remove",
 
-    "ContextMenu_H3PalletItem_Add": "Add %1 %2",
-    "ContextMenu_H3PalletItem_AddAll": "Add All (%1) %2",
-    "ContextMenu_H3PalletItem_Remove": "Take %1 %2",
-    "ContextMenu_H3PalletItem_RemoveAll": "Take All (%1) %2",
+    "ContextMenu_H3_PalletItem_Add": "Add %1 %2",
+    "ContextMenu_H3_PalletItem_AddAll": "Add All (%1) %2",
+    "ContextMenu_H3_PalletItem_Remove": "Take %1 %2",
+    "ContextMenu_H3_PalletItem_RemoveAll": "Take All (%1) %2",
 
-    "ContextMenu_H3PalletItem_AddEmpty": "Add %1 %2 (Empty)",
-    "ContextMenu_H3PalletItem_AddAllEmpty": "Add All (%1) %2 (Empty)",
-    "ContextMenu_H3PalletItem_RemoveEmpty": "Take %1 %2 (Empty)",
-    "ContextMenu_H3PalletItem_RemoveAllEmpty": "Take All (%1) %2 (Empty)"
+    "ContextMenu_H3_PalletItem_Add_Delta": "Add %1 %2 [%3%%] full",
+    "ContextMenu_H3_PalletItem_AddAll_Delta": "Add All (%1) %2 [%3%%] full",
+    "ContextMenu_H3_PalletItem_Remove_Delta": "Take %1 %2 [%3%%] full",
+    "ContextMenu_H3_PalletItem_RemoveAll_Delta": "Take All (%1) %2 [%3%%] full",
+
+    "ContextMenu_H3_PalletItem_Add_Condition": "Add %1 %2 [%3%%] condition",
+    "ContextMenu_H3_PalletItem_AddAll_Condition": "Add All (%1) %2 [%3%%] condition",
+    "ContextMenu_H3_PalletItem_Remove_Condition": "Take %1 %2 [%3%%] condition",
+    "ContextMenu_H3_PalletItem_RemoveAll_Condition": "Take All (%1) %2 [%3%%] condition"
 }

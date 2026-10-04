@@ -2,25 +2,13 @@ module Base
 {
     entity BrickPallet
     {
-        component UiConfig
-        {
-            xuiSkin = default,
-            entityStyle = ES_BrickPallet,
-            uiEnabled = false,
-        }
-        component ContextMenuConfig
-        {
-            contextEntry { menu = H3InteractPallet, customSubmenu = H3_ContextMenuCode.InteractPallet, }
+        component UiConfig 
+        { 
+            xuiSkin = default, entityStyle = ES_BrickPallet, uiEnabled = false, 
         }
         component SpriteConfig
         {
-            face SINGLE
-            {
-                layer
-                {
-                    row = construction_01_4,
-                }
-            }
+            face SINGLE { layer { row = construction_01_4, } }
         }
     }
 }
