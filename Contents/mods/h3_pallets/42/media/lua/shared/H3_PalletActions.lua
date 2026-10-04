@@ -15,7 +15,7 @@
 -- light allowed the primordial hydrogen and helium gas to cool down so as to
 -- form stars.
 -- ============================================================================
--- Hey this is Hell, thanks for checking out the mod!
+-- Hey it's Hell, thanks for checking out the mod! I tried to make it readable
 
 -- It's primarily built on the vanilla ISTakeBricks action which I've beefed up 
 -- so it can handle bidirectional item transfers and sprite overlays. All the
@@ -27,49 +27,66 @@ require "TimedActions/ISBaseTimedAction"
 H3_InteractPallet = ISBaseTimedAction:derive("H3_InteractPallet")
 
 --[[ returns an item table as such e.g. 
-{
-    ["Base.PropaneTank"] = {
-        property = "delta",
-        properties = {
-            [0.5] = 2,
-            [0.8] = 1,
-        }
-    }
-} --]]
+{                              |{
+    ["Base.PropaneTank"] = {   |    ["Base.SteelIngot"] = {
+        property = "delta",    |        property = "normal",
+        properties = {         |        properties = {
+            [0.5] = 2,         |            normal = 5,
+            [0.8] = 1,         |        }
+        }                      |    }
+    }                          |}
+}                              |
+--]]
+
 local function GetItemProperties(itemObj, itemTable)
-    if not itemObj then return end
+    if not itemObj then return itemTable end
 
-    local itemData = {
-        property = nil,
-        properties = {}
-    }
+    itemTable = itemTable or {}
 
-    if itemObj:getConditionMax() > 0 then
-        itemData.property = "condition"
-        local itemCondition = itemObj:getCondition()
-        itemData.properties[itemCondition] = (itemData.properties[itemCondition] or 0) + 1
+    local fullType = itemObj:getFullType()
+    local itemData = itemTable[fullType]
 
-    elseif itemObj:IsDrainable() then
+    if not itemData then
+        itemData = {
+            property = nil,
+            properties = {}
+        }
+
+        itemTable[fullType] = itemData
+    end
+
+    if instanceof(itemObj, "DrainableComboItem") then
         itemData.property = "delta"
         local itemDelta = itemObj:getCurrentUsesFloat()
         itemData.properties[itemDelta] = (itemData.properties[itemDelta] or 0) + 1
+
+    elseif itemObj:hasComponent(ComponentType.Durability) then
+        itemData.property = "condition"
+        local condition = itemObj:getCondition()
+        itemData.properties[condition] = (itemData.properties[condition] or 0) + 1
 
     else
         itemData.property = "normal"
         itemData.properties.normal = (itemData.properties.normal or 0) + 1
     end
 
-    itemTable = itemTable or {}
-    itemTable[itemObj:getFullType()] = itemData
-
     return itemTable
 end
 
--- global so client side context UI can use it too
-function H3_PlayerRequiredItems(player, itemType)
-    if not player or not itemType then
+local function H3_PlayerRequiredItems(player, itemInput)
+    if not player or not itemInput then
         return nil
     end
+
+    -- if multiple items listed in itemType then generate a joint table
+    if type(itemInput) == "table" then
+        local resultTable = {}
+        for _, item in ipairs(itemInput) do
+            resultTable.append(H3_PlayerRequiredItems(player, item))
+        end
+        return resultTable
+    end
+    local itemType = itemInput
 
     -- check player inventory first
     local itemTable = {}
@@ -88,7 +105,12 @@ function H3_PlayerRequiredItems(player, itemType)
             itemTable = GetItemProperties(item, itemTable)
         end
     end
-
+    print("ItemType: " .. tostring(itemType))
+    if not itemTable[itemType] then
+        print("table empty lets return default properties")
+        itemTable = { [itemType] = { property = "normal", properties = { normal = 0 } } }
+    end
+    print("ItemTable: " .. tostring(itemTable))
     return itemTable
 end
 

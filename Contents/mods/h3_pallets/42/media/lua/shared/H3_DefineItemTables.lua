@@ -10,7 +10,7 @@ local keys = {
 
 local items = {
     {
-        item = "Base.SteelIngot",
+        items = { "Base.SteelIngot", },
         icon = "Item_Ingot_Steel.png",
         category = "Ingot",
         stages = {
@@ -36,7 +36,7 @@ local items = {
         },
     },
     {
-        item = "Base.GoldBar",
+        items = { "Base.GoldBar", },
         icon = "Item_Ingot_Gold.png",
         category = "Ingot",
         stages = {
@@ -62,7 +62,7 @@ local items = {
         },
     },
     {
-        item = "Base.IronIngot",
+        items = { "Base.IronIngot", },
         icon = "Item_Ingot_Iron.png",
         category = "Ingot",
         stages = {
@@ -88,7 +88,7 @@ local items = {
         },
     },
     {
-        item = "Base.CopperIngot",
+        items = { "Base.CopperIngot", },
         icon = "Item_Ingot_Copper.png",
         category = "Ingot",
         stages = {
@@ -114,7 +114,7 @@ local items = {
         },
     },
     {
-        item = "Base.SilverBar",
+        items = { "Base.SilverBar", },
         icon = "Item_Ingot_Silver.png",
         category = "Ingot",
         stages = {
@@ -140,7 +140,7 @@ local items = {
         },
     },
     {
-        item = "Base.BrassIngot",
+        items = { "Base.BrassIngot", },
         icon = "Item_Ingot_Brass.png",
         category = "Ingot",
         stages = {
@@ -166,7 +166,7 @@ local items = {
         },
     },
     {
-        item = "Base.AluminumIngot",
+        items = { "Base.AluminumIngot", },
         icon = "media/textures/Item_Ingot_Aluminum.png",
         category = "Ingot",
         stages = {
@@ -192,7 +192,7 @@ local items = {
         },
     },
     {
-        item = "Base.PropaneTank",
+        items = { "Base.PropaneTank", },
         icon = "Item_PropaneTank.png",
         category = "PropaneTank",
         stages = {
@@ -216,7 +216,7 @@ local items = {
         },
     },
     {
-        item = "Base.ClayBrick",
+        items = { "Base.ClayBrick", },
         icon = "Item_ClayBrick_Fired.png",
         category = "Material",
         stages = {
@@ -225,7 +225,7 @@ local items = {
         },
     },
     {
-        item = "Base.ConcretePowder",
+        items = { "Base.ConcretePowder", },
         icon = "Item_Concrete_Powder.png",
         category = "Material",
         stages = {
@@ -251,7 +251,7 @@ local items = {
         },
     },
     {
-        item = "Base.Dirtbag",
+        items = { "Base.Dirtbag", },
         icon = "Item_Sandbag.png",
         category = "Material",
         stages = {
@@ -275,7 +275,7 @@ local items = {
         },
     },
     {
-        item = "Base.Sandbag",
+        items = { "Base.Sandbag", },
         icon = "Item_Sandbag.png",
         category = "Material",
         stages = {
@@ -299,7 +299,7 @@ local items = {
         },
     },
     {
-        item = "Base.Gravelbag",
+        items = { "Base.Gravelbag", },
         icon = "Item_Gravelbag.png",
         category = "Material",
         stages = {
@@ -323,7 +323,7 @@ local items = {
         },
     },
     {
-        item = "Base.Claybag",
+        items = { "Base.Claybag", },
         icon = "Item_Sandbag.png",
         category = "Material",
         stages = {
@@ -347,7 +347,7 @@ local items = {
         },
     },
     {
-        item = "Base.PlasterPowder",
+        items = { "Base.PlasterPowder", },
         icon = "Item_Plaster_Powder.png",
         category = "Material",
         stages = {
@@ -373,7 +373,7 @@ local items = {
         },
     },
     {
-        item = "Base.Log",
+        items = { "Base.Log", },
         icon = "Item_Logs.png",
         category = "Material",
         stages = {
@@ -387,7 +387,7 @@ local items = {
         },
     },
     {
-        item = "Base.Plank",
+        items = { "Base.Plank", },
         icon = "Item_Plank.png",
         category = "Material",
         stages = {
@@ -407,7 +407,7 @@ local items = {
         },
     },
     {
-        item = "Base.SheetMetal",
+        items = { "Base.SheetMetal", },
         icon = "Item_SheetMetal.png",
         category = "Material",
         stages = {
@@ -433,7 +433,11 @@ local items = {
         },
     },
     {
-        tag = "wholetire1",
+        items = {
+            "Base.OldTire1",
+            "Base.NormalTire1",
+            "Base.ModernTire1",
+        },
         icon = "Item_CarTire.png",
         category = "Tire",
         stages = {
@@ -446,7 +450,11 @@ local items = {
         },
     },
     {
-        tag = "wholetire2",
+        items = {
+            "Base.OldTire2",
+            "Base.NormalTire2",
+            "Base.ModernTire2",
+        },
         icon = "Item_CarTire.png",
         category = "Tire",
         stages = {
@@ -459,7 +467,11 @@ local items = {
         },
     },
     {
-        item = "wholetire3",
+        items = {
+            "Base.OldTire3",
+            "Base.NormalTire3",
+            "Base.ModernTire3",
+        },
         icon = "Item_CarTire.png",
         category = "Tire",
         stages = {
@@ -472,7 +484,7 @@ local items = {
         },
     },
     {
-        item = "Base.MoneyBundle",
+        items = { "Base.MoneyBundle", },
         icon = "Item_Money_Stack.png",
         category = "Money",
         stages = {
@@ -535,7 +547,7 @@ local items = {
 -- this == brick def above but when I add custom textures I will need it anyway
 local brickResolver = {
     {
-        item = "Base.ClayBrick",
+        items = { "Base.ClayBrick", },
         icon = "Item_ClayBrick_Fired.png",
         stages = {
             {amount =  0, resultSprite = keys.vEmptyPallet},
@@ -548,7 +560,7 @@ local brickResolver = {
 -- Add (All) option is variable based on inventory available though
 local goldResolver = {
     {
-        item = "Base.GoldBar",
+        items = { "Base.GoldBar", },
         icon = "Item_Ingot_Gold.png",
         stages = {
             {amount =  0, resultSprite = keys.vEmptyPallet},

@@ -12,21 +12,26 @@ Items stackable on pallets:
 - Cash
 - Bricks
 
-In Progress:
-- revert to setSprite() instead of setOverlaySprite()
-- Read in vanilla pallet for brick and gold again
-- Fix propane tanks so they use ModData
-- Tires (condition) ModData
-
 To Do:
-- multi item using tag functionality
+- finish clientside logic (item removal)
+- fix shared logic
 - Scale down Tires texture
 - Ammo Pallets
 - Charcoal Pallet
 - Bricks (needs more sprites)
 
-Need to branch to revert to old code using sprites instead of overlaysprites for moveables to be correct
-this needs to create a new entry point for the client context menu as well so we dont have to define entities for every sprite
+New logic client side is as follows:
+- ClickHook -> palletMenu onto the right click context menu when there is a valid sprite in square clicked
+- GetClient -> Read in data from the sprite object, things like spriteName, modData if it has any. Also client inventory.
+- GetShared -> Based on GetClient, get the shared items tables for populating the context window.
+- Construct -> Using the data, generate the context menu options
+- Send Auth -> If an option is clicked, ISTimedActionQueue.add ( H3_InteractPallet:new(data))
+
+Shared logic:
+- Run :new  	-> Read in the information and initialise
+- Run :isValid  -> Confirm information independently
+- Run :actions  -> handles animations, walking etc (unchanged from vanilla ISTakeBricks)
+- Run :complete -> This calls UpdateInventory and UpdateModData as well as changes the sprite
 
 
 This mod was created primarily for SpaghettiZ's Bolognese server but anyone is welcome to use it and repack it in their own server mods.

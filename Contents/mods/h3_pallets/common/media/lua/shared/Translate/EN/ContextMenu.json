@@ -15,8 +15,13 @@
     "ContextMenu_H3_PalletItem_Remove": "Take %1 %2",
     "ContextMenu_H3_PalletItem_RemoveAll": "Take All (%1) %2",
 
-    "ContextMenu_H3_PalletItem_Add_Property": "Add %1 %2 [%3] uses",
-    "ContextMenu_H3_PalletItem_AddAll_Property": "Add All (%1) %2 [%3] uses",
-    "ContextMenu_H3_PalletItem_Remove_Property": "Take %1 %2 [%3] uses",
-    "ContextMenu_H3_PalletItem_RemoveAll_Property": "Take All (%1) %2 [%3] uses"
+    "ContextMenu_H3_PalletItem_Add_Delta": "Add %1 %2 [%3%%] full",
+    "ContextMenu_H3_PalletItem_AddAll_Delta": "Add All (%1) %2 [%3%%] full",
+    "ContextMenu_H3_PalletItem_Remove_Delta": "Take %1 %2 [%3%%] full",
+    "ContextMenu_H3_PalletItem_RemoveAll_Delta": "Take All (%1) %2 [%3%%] full",
+
+    "ContextMenu_H3_PalletItem_Add_Condition": "Add %1 %2 [%3%%] condition",
+    "ContextMenu_H3_PalletItem_AddAll_Condition": "Add All (%1) %2 [%3%%] condition",
+    "ContextMenu_H3_PalletItem_Remove_Condition": "Take %1 %2 [%3%%] condition",
+    "ContextMenu_H3_PalletItem_RemoveAll_Condition": "Take All (%1) %2 [%3%%] condition"
 }
