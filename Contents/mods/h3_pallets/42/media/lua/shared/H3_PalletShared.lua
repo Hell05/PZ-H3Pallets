@@ -374,8 +374,9 @@ function H3_InteractPallet:complete()
     debugH3.log("New Data: | H3_itemTotal:" .. tostring(modData.movableData.H3_itemTotal) .. " |  H3_itemProperty: " .. tostring(modData.movableData.H3_itemProperty) .. " | H3_itemPropertyData: " .. tostring(modData.movableData.H3_itemPropertyData))
 
     -- update and transmit sprite
-    self.pallet:setSprite(self.resultSprite)
+    self.pallet:setSprite(getSprite(self.resultSprite))
     self.pallet:transmitUpdatedSpriteToClients()
+
 
     debugH3.log("Inventory and pallet updates finished: ... Success!")
     return true

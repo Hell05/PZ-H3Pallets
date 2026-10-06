@@ -3,7 +3,7 @@
 -- Global Utility functions used by multiple files
 -- ============================================================================
 
-local debugLogging = true  -- toggle off if you want to hide generic logging and safe warnings
+local debugLogging = false  -- toggle off if you want to hide generic logging and safe warnings
 
 local debugH3 = {}
 function debugH3.log(text1, text2, text3)
@@ -67,6 +67,7 @@ end
 
 -- returns a table of available items to iterate through
 function H3_GetAvailableItems(itemInput, allInventoryItems, allGroundItems)
+    debugH3.log("itemInput: ", itemInput)
     if not itemInput then
         debugH3.log("missing itemInput: ", itemInput)
         return {}

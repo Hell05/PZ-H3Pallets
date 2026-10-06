@@ -4,11 +4,19 @@ module Base
     {
         component UiConfig
         {
-            xuiSkin = default, entityStyle = ES_H3Pallet, uiEnabled = false,
+            xuiSkin = default,
+            entityStyle = ES_H3Pallet,
+            uiEnabled = false,
         }
         component SpriteConfig
         {
-            face SINGLE { layer { row = construction_01_5, } }
+            face SINGLE
+            {
+                layer
+                {
+                    row = construction_01_5,
+                }
+            }
         }
         component CraftRecipe
         {

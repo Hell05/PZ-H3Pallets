@@ -53,6 +53,7 @@ H3_Pallet.__index = H3_Pallet
 local function UI_CreateItemOption(self, subMenu, data, stage, mode, amount, actionName, propertyData)
     -- construct the translation friendly context menu option text
     local textKey = "ContextMenu_" .. actionName
+    debugH3.log(textKey, amount, propertyData.type)
     local displayText = getText(textKey, amount, getItemNameFromFullType(propertyData.type))
 
     if propertyData.pname == "delta" then
@@ -146,7 +147,6 @@ local function GetStage(mode, data, palletItemCount)
         end
         return previousStage
     end
-    debugH3.wanr("No stage found in GetStage.")
 end
 
 local function GetLowestAvailableStage(available, stages, palletItemCount)
@@ -311,7 +311,6 @@ function H3_Pallet:constructMenu()
                 -- else we need to create actionMenus for Add / Remove and their respective item options
                 else
                     CreateAdd_PalletMenu(self, actionMenus, data, itemProperty)
-
                 end
             end
         end
@@ -438,7 +437,7 @@ local function GetSpriteObj_ModData(modData, spriteName, isVanillaPallet)
         local fullTypes = movableData.H3_itemFullTypes or {}
         local total = movableData.H3_itemTotal or 0
         local fallback = {}
-        for key, _ in pairs(fullTypes) do
+        for _, key in pairs(fullTypes) do
             fallback = { [key] = { normal = total, }, }
         end
 
@@ -460,7 +459,7 @@ local function GetSpriteObj_ModData(modData, spriteName, isVanillaPallet)
                         local fullTypes = data.items or {}
                         local total = stage.amount or 0
                         local ptable = {}
-                        for key, _ in pairs(fullTypes) do
+                        for _, key in pairs(fullTypes) do
                             ptable = { [key] = { normal = total, }, }
                         end
 

@@ -2,13 +2,21 @@ module Base
 {
     entity BrickPallet
     {
-        component UiConfig 
-        { 
-            xuiSkin = default, entityStyle = ES_BrickPallet, uiEnabled = false, 
+        component UiConfig
+        {
+            xuiSkin = default,
+            entityStyle = ES_H3BrickPallet,
+            uiEnabled = false,
         }
         component SpriteConfig
         {
-            face SINGLE { layer { row = construction_01_4, } }
+            face SINGLE
+            {
+                layer
+                {
+                    row = construction_01_4,
+                }
+            }
         }
     }
 }
