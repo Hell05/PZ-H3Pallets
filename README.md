@@ -13,12 +13,13 @@ Items stackable on pallets:
 - Bricks
 
 To Do:
-- finish clientside logic (item removal)
-- fix shared logic
+- Investigate the vanilla pallet bugs
+- Test on localhost MP with another player
 - Scale down Tires texture
 - Ammo Pallets
 - Charcoal Pallet
 - Bricks (needs more sprites)
+- Mixed Boxed Crate
 
 New logic client side is as follows:
 - ClickHook -> palletMenu onto the right click context menu when there is a valid sprite in square clicked
@@ -27,7 +28,7 @@ New logic client side is as follows:
 - Construct -> Using the data, generate the context menu options
 - Send Auth -> If an option is clicked, ISTimedActionQueue.add ( H3_InteractPallet:new(data))
 
-Shared logic:
+Shared logic (Authoritative):
 - Run :new  	-> Read in the information and initialise
 - Run :isValid  -> Confirm information independently
 - Run :actions  -> handles animations, walking etc (unchanged from vanilla ISTakeBricks)
@@ -38,4 +39,4 @@ This mod was created primarily for SpaghettiZ's Bolognese server but anyone is w
 
 Join Bolognese here - https://discord.gg/fhbA3vnrr9
 
-Workshop link - 
+Workshop link - https://steamcommunity.com/sharedfiles/filedetails/?id=3814418428

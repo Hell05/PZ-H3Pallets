@@ -1,0 +1,131 @@
+---@diagnostic disable: undefined-global
+-- ============================================================================
+-- Global Utility functions used by multiple files
+-- ============================================================================
+
+local debugLogging = true  -- toggle off if you want to hide generic logging and safe warnings
+
+local debugH3 = {}
+function debugH3.log(text1, text2, text3)
+    if debugLogging then print("[H3 Log]  ", tostring(text1 or "") .. tostring(text2 or "") .. tostring(text3 or "")) end
+end
+function debugH3.warn(text1, text2, text3)
+    if debugLogging then print("[=== [H3 WARN] ===]  ", tostring(text1 or "") .. tostring(text2 or "") .. tostring(text3 or "")) end
+end
+function debugH3.error(text1, text2, text3) print("[!!! [H3 ERROR] !!!]  ", tostring(text1 or "") .. tostring(text2 or "") .. tostring(text3 or "")) end
+
+-- ============================================================================
+
+--[[ returns an item table such as e.g. below.  I use a similar data structure for the modData that gets passed as well to keep it consistent.
+
+{                              |{
+    ["Base.PropaneTank"] = {   |    ["Base.SteelIngot"] = {
+        pname = "delta",       |        pname = "normal",
+        ptable = {             |        ptable = {
+            [0.5] = 2,         |            normal = 5,
+            [0.8] = 1,         |        }
+        }                      |    }
+    }                          |}
+}                              |
+
+--]]
+
+local function GetItemProperties(itemObj, itemTable)
+    if not itemObj then return itemTable end
+
+    itemTable = itemTable or {}
+
+    local fullType = itemObj:getFullType()
+    local itemData = itemTable[fullType]
+
+    if not itemData then
+        itemData = {
+            pname = "normal",
+            ptable = {}
+        }
+
+        itemTable[fullType] = itemData
+    end
+
+    if instanceof(itemObj, "DrainableComboItem") then
+        itemData.pname = "delta"
+        local itemDelta = math.floor(itemObj:getCurrentUsesFloat() * 100 + 0.5) / 100
+        itemData.ptable[itemDelta] = (itemData.ptable[itemDelta] or 0) + 1
+
+    elseif itemObj:getConditionMax() > 10 then
+        itemData.pname = "condition"
+        local condition = itemObj:getCondition()
+        itemData.ptable[condition] = (itemData.ptable[condition] or 0) + 1
+
+    else
+        itemData.pname = "normal"
+        itemData.ptable.normal = (itemData.ptable.normal or 0) + 1
+    end
+
+    return itemTable
+end
+
+-- returns a table of available items to iterate through
+function H3_GetAvailableItems(itemInput, allInventoryItems, allGroundItems)
+    if not itemInput then
+        debugH3.log("missing itemInput: ", itemInput)
+        return {}
+    end
+
+    -- if multiple items listed in itemType then generate a joint table
+    if type(itemInput) == "table" then
+        local resultTable = {}
+        for _, item in ipairs(itemInput) do
+            local result = H3_GetAvailableItems(item, allInventoryItems, allGroundItems)
+
+            for itemKey, values in pairs(result) do
+                local existing = resultTable[itemKey]
+
+                if not existing then
+                    resultTable[itemKey] = values
+                else
+                    existing.pname = values.pname
+                    for propertyValue, count in pairs(values.ptable) do
+                        existing.ptable[propertyValue] = (existing.ptable[propertyValue] or 0) + count
+                    end
+                end
+            end
+        end
+
+        return resultTable
+    end
+
+    -- else itemInput is a string so continue
+    local itemType = itemInput
+    local resultTable = {}
+
+    -- check inventoryItems first
+    local inventoryItems = allInventoryItems:getAllTypeRecurse(itemType)
+    if inventoryItems then
+        for i = 0, inventoryItems:size() - 1 do
+            local item = inventoryItems:get(i)
+            resultTable = GetItemProperties(item, resultTable)
+        end
+    end
+
+    -- check groundItems next
+    local groundItems = allGroundItems[itemType]
+    if groundItems then
+        for _, item in ipairs(groundItems) do
+            resultTable = GetItemProperties(item, resultTable)
+        end
+    end
+
+    -- if nothing is in resultTable the item is not available, default count to 0
+    if not resultTable[itemType] then
+        resultTable = { [itemType] = { pname = "normal", ptable = { normal = 0 } } }
+
+        -- We still want the context entry for the item but we use default properties to prevent
+        -- items that can have condition or delta values being displayed all values at all times.
+        -- Instead we use a generic entry to group them and only show values if they are available
+    end
+
+    return resultTable
+end
+
+return debugH3

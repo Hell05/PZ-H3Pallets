@@ -10,7 +10,6 @@ module Base
         {
             face SINGLE { layer { row = construction_01_5, } }
         }
-
         component CraftRecipe
         {
             timedAction = BuildLowHammer,

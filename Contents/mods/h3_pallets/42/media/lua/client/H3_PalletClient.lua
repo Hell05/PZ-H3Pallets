@@ -28,20 +28,9 @@
 -- Now its all done through the right click context menu so its much cleaner!
 -- ============================================================================
 
-local debugMode = true
-local debugLogging = true
+local clientDebug = false  -- for testing only     disables :sendRequest() from actually communicating with H3_PalletShared.lua
 
-local debugH3 = {}
-function debugH3.log(text1, text2, text3)
-    if debugLogging then print("[H3 Log]  ", tostring(text1 or "") .. tostring(text2 or "") .. tostring(text3 or "")) end
-end
-function debugH3.warn(text1, text2, text3)
-    if debugLogging then print("[=== [H3 WARN] ===]  ", tostring(text1 or "") .. tostring(text2 or "") .. tostring(text3 or "")) end
-end
-function debugH3.error(text1, text2, text3) print("[!!! [H3 ERROR] !!!]  ", tostring(text1 or "") .. tostring(text2 or "") .. tostring(text3 or "")) end
-
--- ============================================================================
-
+local debugH3 = require("H3_GlobalUtils")
 local import = require("H3_DefineItemTables")
 
 local itemLookup = import and import.items
@@ -66,15 +55,24 @@ local function UI_CreateItemOption(self, subMenu, data, stage, mode, amount, act
     local textKey = "ContextMenu_" .. actionName
     local displayText = getText(textKey, amount, getItemNameFromFullType(propertyData.type))
 
-    if propertyData.name == "delta" then
+    if propertyData.pname == "delta" then
         textKey = textKey .. "_Delta"
         local value = string.format("%.0f", (propertyData.value * 100))
-        displayText = getText(textKey, amount, getItemNameFromFullType(propertyData.type), value)
+        displayText = getText(textKey, amount, value, getItemNameFromFullType(propertyData.type))
 
-    elseif propertyData.name == "condition" then
+    elseif propertyData.pname == "condition" then
         textKey = textKey .. "_Condition"
         local value = string.format("%.0f", propertyData.value )
-        displayText = getText(textKey, amount, getItemNameFromFullType(propertyData.type), value)
+        displayText = getText(textKey, amount, value, getItemNameFromFullType(propertyData.type))
+    end
+
+    -- attach mechanics text
+    for i = 1, 3 do
+        if propertyData.type:find(tostring(i), 1, true) then
+            local mechanicsItemText = "IGUI_VehicleType_" .. tostring(i)
+            displayText = displayText .. " (" .. tostring(getText(mechanicsItemText)) .. ")"
+            break
+        end
     end
 
     -- create the clickable option with callback to sendRequest
@@ -148,7 +146,25 @@ local function GetStage(mode, data, palletItemCount)
         end
         return previousStage
     end
-    H3_Debug("warn", "No stage found in GetStage.")
+    debugH3.wanr("No stage found in GetStage.")
+end
+
+local function GetLowestAvailableStage(available, stages, palletItemCount)
+    local lowestStage = nil
+
+    for _, stage in ipairs(stages) do
+        if stage.amount < palletItemCount then
+            local required = palletItemCount - stage.amount
+
+            if available >= required then
+                if not lowestStage or stage.amount < lowestStage.amount then
+                    lowestStage = stage
+                end
+            end
+        end
+    end
+
+    return lowestStage
 end
 
 local function GetHighestAvailableStage(available, stages, palletItemCount)
@@ -187,6 +203,9 @@ local function CreateEmpty_PalletMenus(self, categoryMenus, data, propertyData)
 end
 
 local function CreateAdd_PalletMenu(self, actionMenus, data, propertyData)
+    local currentStage = GetStage("Current", data, self.movableData.total)
+    if not currentStage then return end
+
     -- if pallet has nextStage then create an Add actionMenu and Add -> Item option
     local nextStage = GetStage("Next", data, self.movableData.total)
     if not nextStage then return end
@@ -207,6 +226,9 @@ local function CreateAdd_PalletMenu(self, actionMenus, data, propertyData)
 end
 
 local function CreateRemove_PalletMenu(self, actionMenus, data, propertyData)
+    local currentStage = GetStage("Current", data, self.movableData.total)
+    if not currentStage then return end
+
     -- if pallet has previousStage then create an Remove actionMenu and Remove -> Item option
     local previousStage = GetStage("Previous", data, self.movableData.total)
     if not previousStage then return end
@@ -219,10 +241,10 @@ local function CreateRemove_PalletMenu(self, actionMenus, data, propertyData)
     UI_CreateItemOption(self, actionMenus.Remove, data, previousStage, "RemoveItem", removeAmount, "H3_PalletItem_Remove", propertyData)
 
     -- if pallet has more than 1 previousStage left then create an RemoveAll option
-    local emptyStage = data.stages[1]
-    local removeAllAmount = propertyData.count
-    if removeAllAmount > removeAmount then
-        UI_CreateItemOption(self, actionMenus.Remove, data, emptyStage, "RemoveItem", removeAllAmount, "H3_PalletItem_RemoveAll", propertyData)
+    local lowestStage = GetLowestAvailableStage(propertyData.count, data.stages, self.movableData.total)
+    if lowestStage and lowestStage.amount < previousStage.amount then
+        local removeAllAmount = self.movableData.total - lowestStage.amount
+        UI_CreateItemOption(self, actionMenus.Remove, data, lowestStage, "RemoveItem", removeAllAmount, "H3_PalletItem_RemoveAll", propertyData)
     end
 end
 
@@ -230,117 +252,27 @@ end
 -- H3_Pallet Class and its helpers
 -- ============================================================================
 
---[[ returns an item table such as e.g. 
-
-{                              |{
-    ["Base.PropaneTank"] = {   |    ["Base.SteelIngot"] = {
-        property = "delta",    |        property = "normal",
-        properties = {         |        properties = {
-            [0.5] = 2,         |            normal = 5,
-            [0.8] = 1,         |        }
-        }                      |    }
-    }                          |}
-}                              |
-
---]]
-
-local function GetItemProperties(itemObj, itemTable)
-    if not itemObj then return itemTable end
-
-    itemTable = itemTable or {}
-
-    local fullType = itemObj:getFullType()
-    local itemData = itemTable[fullType]
-
-    if not itemData then
-        itemData = {
-            property = nil,
-            properties = {}
-        }
-
-        itemTable[fullType] = itemData
+-- returns iterable table for ordering items in context menu
+local function SortPropertyValues(ptable)
+    if ptable["normal"] then
+        return {"normal"}
     end
 
-    if instanceof(itemObj, "DrainableComboItem") then
-        itemData.property = "delta"
-        local itemDelta = itemObj:getCurrentUsesFloat()
-        itemData.properties[itemDelta] = (itemData.properties[itemDelta] or 0) + 1
+    local values = {}
 
-    elseif itemObj:hasComponent(ComponentType.Durability) then
-        itemData.property = "condition"
-        local condition = itemObj:getCondition()
-        itemData.properties[condition] = (itemData.properties[condition] or 0) + 1
-
-    else
-        itemData.property = "normal"
-        itemData.properties.normal = (itemData.properties.normal or 0) + 1
+    for key in pairs(ptable) do
+        table.insert(values, key)
     end
 
-    return itemTable
-end
+    table.sort(values)
 
--- returns a table of available items to iterate through
-local function GetAvailableItems(itemInput, allInventoryItems, allGroundItems)
-    if not itemInput then
-        debugH3.log("itemInput: ", itemInput)
-        return {}
-    end
+    return values
 
-    -- if multiple items listed in itemType then generate a joint table
-    if type(itemInput) == "table" then
-        local resultTable = {}
-        for _, item in ipairs(itemInput) do
-            local result = GetAvailableItems(item, allInventoryItems, allGroundItems)
-            if result then
-                for itemKey, values in pairs(result) do
-                    resultTable[itemKey] = values
-                end
-            end
-        end
-        return resultTable
-    end
-
-    -- else itemInput is a string so continue
-    local itemType = itemInput
-    local resultTable = {}
-
-    -- check inventoryItems first
-    local inventoryItems = allInventoryItems:getAllTypeRecurse(itemType)
-    if inventoryItems then
-        for i = 0, inventoryItems:size() - 1 do
-            local item = inventoryItems:get(i)
-            resultTable = GetItemProperties(item, resultTable)
-        end
-    end
-
-    -- check groundItems next
-    local groundItems = allGroundItems[itemType]
-    if groundItems then
-        for _, item in ipairs(groundItems) do
-            resultTable = GetItemProperties(item, resultTable)
-        end
-    end
-
-    -- if nothing is in resultTable the item is not available, default count to 0
-    if not resultTable[itemType] then
-        resultTable = { [itemType] = { property = "normal", properties = { normal = 0 } } }
-
-        -- We still want the context entry for the item but we use default properties to prevent
-        -- items that can have condition or delta values being displayed all values at all times.
-        -- Instead we use a generic entry to group them and only show values if they are available
-    end
-
-    return resultTable
-end
-
--- TODO return a list similar to GetAvailableItems but we have to use modData to construct it
-local function GetPalletContents(movableData)
-    return {}
 end
 
 -- constructs PalletContextMenu based on available data
 function H3_Pallet:constructMenu()
-    debugH3.log("RUN: constructMenu()")
+    debugH3.log("Client | RUN: constructMenu()")
 
     -- create the main context option for the pallet
     local palletMenu = UI_GetOrCreateSubMenu(self.context, {}, "H3_InteractPallet", "media/textures/Item_EmptyPallet.png")
@@ -350,8 +282,6 @@ function H3_Pallet:constructMenu()
     end
 
     self.palletMenu = palletMenu
-    debugH3.log("Pallet Context Menu:  ", self.palletMenu)
-
     local categoryMenus = {}
     local actionMenus = {}
 
@@ -359,20 +289,20 @@ function H3_Pallet:constructMenu()
     for _, data in ipairs(self.lookupTable) do
 
         -- for each playerAvailableItem
-        local playerAvailableItems = GetAvailableItems(data.items, self.inventoryItems, self.groundItems)
-        debugH3.log("playerAvailableItems:  ", playerAvailableItems)
+        local playerAvailableItems = H3_GetAvailableItems(data.items, self.inventoryItems, self.groundItems)
         for itemType, propertyData in pairs(playerAvailableItems) do
             debugH3.log("PlayerAvailableItem: ", itemType)
 
             -- for each Item variant (condition or delta)
-            for value, count in pairs(propertyData.properties) do
+            local menuOrder = SortPropertyValues(propertyData.ptable)
+            for _, value in ipairs(menuOrder) do
                 local itemProperty = {
                     type = itemType,
-                    name = propertyData.property,
+                    pname = propertyData.pname,
                     value = value,
-                    count = count,
+                    count = propertyData.ptable[value],
                 }
-                debugH3.log("Property: " .. tostring(itemProperty.name) .. " | Value: " .. tostring(itemProperty.value) .. " | Count: " .. tostring(itemProperty.count))
+                debugH3.log("Property: " .. tostring(itemProperty.pname) .. " | Value: " .. tostring(itemProperty.value) .. " | Count: " .. tostring(itemProperty.count))
 
                 -- if pallet empty, create categoryMenus and their Add / AddAll item options
                 if self.movableData.total == 0 then
@@ -380,39 +310,32 @@ function H3_Pallet:constructMenu()
 
                 -- else we need to create actionMenus for Add / Remove and their respective item options
                 else
-                    local currentStage = GetStage("Current", data, self.movableData.total)
-                    if currentStage then
-                        CreateAdd_PalletMenu(self, actionMenus, data, itemProperty)
-                        -- TODO: remove menu needs its own palletAvailableItems loop based on pallet contents once we have modData
-                        CreateRemove_PalletMenu(self, actionMenus, data, itemProperty)
-                    end
+                    CreateAdd_PalletMenu(self, actionMenus, data, itemProperty)
+
                 end
             end
         end
 
-        -- TODO: adapt this so its suitable for removing items from pallet, should skip currently.
-        -- for each palletAvailableItem
-        local palletAvailableItems = GetPalletContents(self.movableData)
-        for itemType, propertyData in pairs(palletAvailableItems) do
-            debugH3.log("PalletAvailableItem: ", itemType)
+        -- if pallet has items to remove
+        if self.movableData.total > 0 then
 
-            -- for each Item variant (condition or delta)
-            for value, count in pairs(propertyData.properties) do
-                local itemProperty = {
-                    type = itemType,
-                    name = propertyData.property,
-                    value = value,
-                    count = count,
-                }
-                debugH3.log("Property: " .. tostring(itemProperty.name) .. " | Value: " .. tostring(itemProperty.value) .. " | Count: " .. tostring(itemProperty.count))
+            -- for each palletAvailableItem
+            local palletAvailableItems = self.movableData.ptable
+            for itemType, propertyData in pairs(palletAvailableItems) do
+                debugH3.log("PalletAvailableItem: ", itemType)
 
-                if self.movableData.total > 0 then
+                -- for each Item variant (condition or delta)
+                local menuOrder = SortPropertyValues(propertyData)
+                for _, value in ipairs(menuOrder) do
+                    local itemProperty = {
+                        type = itemType,
+                        pname = self.movableData.pname,
+                        value = value,
+                        count = propertyData[value],
+                    }
+                    debugH3.log("Property: " .. tostring(itemProperty.pname) .. " | Value: " .. tostring(itemProperty.value) .. " | Count: " .. tostring(itemProperty.count))
 
-                local currentStage = GetStage("Current", data, self.movableData.total)
-                if currentStage then
-                    -- TODO: remove menu needs its own palletAvailableItems loop based on pallet contents once we have modData
                     CreateRemove_PalletMenu(self, actionMenus, data, itemProperty)
-                    end
                 end
             end
         end
@@ -425,8 +348,8 @@ end
 local function isTable1_EntiryIn_Table2(table1, table2)
     if not table1 or not table2 then return end
 
-    for _, filter in table2 do
-        for _, key in table1 do
+    for _, filter in pairs(table2) do
+        for key, _ in pairs(table1) do
             if key == filter then
                 return true
             end
@@ -457,7 +380,7 @@ local function GetItemsTableForPallet(movableData, spriteName, isVanillaPallet)
 
         -- one returnTable
         if movableData.fullTypes then
-            for _, data in ipairs(lookupTable) do
+            for _, data in ipairs(itemLookup) do
                 if isTable1_EntiryIn_Table2(movableData.fullTypes, data.items) then
                     return {data}
                 end
@@ -471,7 +394,7 @@ end
 
 -- gets inventory and ground itemsTables, gets lookupTable 
 function H3_Pallet:getShared()
-    debugH3.log("RUN: getShared()")
+    debugH3.log("Client | RUN: getShared()")
 
     -- collect itemsTables
     local inventoryItems = self.player:getInventory()
@@ -487,7 +410,6 @@ function H3_Pallet:getShared()
 
     -- filters the lookup to return relevant items only
     local lookupTable = GetItemsTableForPallet(self.movableData, self.spriteName, self.isVP)
-    debugH3.log("lookupTable type: ", type(lookupTable))
 
     if not lookupTable then
         self.error = "Missing lookupTable."
@@ -500,52 +422,67 @@ function H3_Pallet:getShared()
 end
 
 -- returns movableData after reading or creating modData
-local function getSpriteObj_ModData(modData, spriteName, isVanillaPallet)
+local function GetSpriteObj_ModData(modData, spriteName, isVanillaPallet)
     -- if its an empty pallet it wont have modData so return default
     if spriteName == keys.vEmptyPallet then
         return {
             fullTypes = nil,
             total = 0,
-            properties = {},
+            pname = "normal",
+            ptable = {},
         }
     end
 
     local movableData = modData and modData.movableData
     if movableData then
+        local fullTypes = movableData.H3_itemFullTypes or {}
+        local total = movableData.H3_itemTotal or 0
+        local fallback = {}
+        for key, _ in pairs(fullTypes) do
+            fallback = { [key] = { normal = total, }, }
+        end
+
         return {
-            fullTypes = movableData.H3_itemFullTypes or {},
-            total = movableData.H3_itemTotal or 0,
-            properties = movableData.H3_itemProperties or {},
+            fullTypes = fullTypes,
+            total = total,
+            pname = movableData.H3_itemProperty or "normal",
+            ptable = movableData.H3_itemPropertyData or fallback
         }
     end
 
-    -- if pallet doesn't have modData then we need to construct it from spriteName
+    -- if pallet doesn't have modData then we need to construct it from spriteName (this will only run for vanilla pallets)
     if spriteName then
-        local itemsTable = itemLookup
         if isVanillaPallet then
-            itemsTable = vanillaPalletTable[spriteName] or {}
-        end
+            local itemsTable = vanillaPalletTable[spriteName] or {}
+            for _, data in ipairs(itemsTable) do
+                for _, stage in ipairs(data.stages) do
+                    if spriteName == stage.resultSprite then
+                        local fullTypes = data.items or {}
+                        local total = stage.amount or 0
+                        local ptable = {}
+                        for key, _ in pairs(fullTypes) do
+                            ptable = { [key] = { normal = total, }, }
+                        end
 
-        for _, data in ipairs(itemsTable) do
-            for _, stage in ipairs(data.stages) do
-                if spriteName == stage.resultSprite then
-                    return {
-                        fullTypes = data.items or {},
-                        total = stage.amount or 0,
-                        properties = {},
-                    }
+                        return {
+                            fullTypes = fullTypes,
+                            total = total,
+                            pname = "normal",
+                            ptable = ptable
+                        }
+                    end
                 end
             end
         end
     end
 
-    debugH3.warn("Unknown spritename:  ", spriteName, "  in function ConstructItemsData. Returning nil")
+    debugH3.warn("Unknown modData for spriteName:  ", spriteName, "  Returning nil")
     return nil
 end
 
 -- gets spriteName, gets pallet modData.movable
 function H3_Pallet:getClient()
-    debugH3.log("RUN: getClient()")
+    debugH3.log("Client | RUN: getClient()")
 
     -- get spriteName
     local sprite = self.pallet:getSprite()
@@ -558,8 +495,9 @@ function H3_Pallet:getClient()
     end
 
     -- read in pallet modData.movable values (only modData.movable travels with the pallet when its picked up, regular modData gets lost)
-    self.movableData = getSpriteObj_ModData(self.pallet:getModData(), self.spriteName, self.isVP)
-    debugH3.log("Pallet movableData:  ", self.movableData)
+    self.movableData = GetSpriteObj_ModData(self.pallet:getModData(), self.spriteName, self.isVP)
+    debugH3.log("Clientside movableData | Items:  ", self.movableData.fullTypes)
+    debugH3.log("Total:" .. tostring(self.movableData.total) .. " | pname: " .. tostring(self.movableData.pname) .. " | ptable: " .. tostring(self.movableData.ptable))
 
     if not self.movableData then
         self.error = "Missing / failed to construct movableData."
@@ -570,11 +508,11 @@ function H3_Pallet:getClient()
 end
 
 function H3_Pallet:complete()
+    debugH3.log("Client | RUN: complete()")
+
     if self.error then
         return false
     end
-
-    debugH3.log("RUN: complete()")
 
     if not self:getClient() then
         return false
@@ -594,19 +532,19 @@ function H3_Pallet:complete()
 end
 
 function H3_Pallet:sendRequest(sprite, amount, propertyData, mode)
-    debugH3.log("RUN: sendRequest()")
+    debugH3.log("Client | RUN: sendRequest()")
     if mode == "AddItem" then
         -- collect itemsTables again (refreshing because self could be stale now)
         local inventoryItems = self.player:getInventory()
         local groundItems = buildUtil.getMaterialOnGround(self.player:getSquare())
 
         -- check players' available items again
-        local availableItems = GetAvailableItems(propertyData.type, inventoryItems, groundItems)
+        local availableItems = H3_GetAvailableItems(propertyData.type, inventoryItems, groundItems)
         local value = propertyData.value
 
-        local specificPropertyCount = availableItems[propertyData.type].properties[value] or 0
+        local specificPropertyCount = availableItems[propertyData.type].ptable[value] or 0
         if amount > specificPropertyCount then
-            debugH3.log("Player no longer has access to enough available items. Available: ", specificPropertyCount, "  Required: " .. tostring(amount))
+            debugH3.warn("Player no longer has access to enough available items. Available: ", specificPropertyCount, "  Required: " .. tostring(amount))
             return
         end
 
@@ -614,14 +552,16 @@ function H3_Pallet:sendRequest(sprite, amount, propertyData, mode)
         -- pallet content verification code here
         amount = -amount
     end
+    debugH3.log("SEND " .. tostring(mode) .. "  " .. tostring(propertyData.type) .. " with " .. tostring(propertyData.pname) .. ": "
+        .. tostring(propertyData.value) .. " Available: " .. tostring(propertyData.count) .. " Required: " .. tostring(math.abs(amount)))
 
-    if debugMode then  -- remove if when contextMenu is done debugging
-        debugH3.log("SEND " .. tostring(propertyData.type) .. " " .. tostring(propertyData.count) .. " = " .. tostring(amount), "  Successful")
+    if clientDebug then
+        debugH3.log("clientDebug is enabled, halting :sendRequest() and exiting.")
         return
     end
 
 	if luautils.walkAdj(self.player, self.pallet:getSquare(), false) then
-		ISTimedActionQueue.add(H3_InteractPallet:new(self.player, self.pallet, self.pallet:getSquare(), sprite, propertyData.type, amount, propertyData));
+		ISTimedActionQueue.add(H3_InteractPallet:new(self.player, self.pallet, self.pallet:getSquare(), sprite, propertyData, amount, self.movableData))
 	end
 
     return true
@@ -637,8 +577,8 @@ function H3_Pallet:new(contextMenu, playerObj, worldObj, isVanillaPallet)
     o.pallet = worldObj
     o.isVP = isVanillaPallet
 
-    if not o.context or not o.player or not o.pallet or not o.isVP then
-        o.error = "Invalid context / player / pallet / bool"
+    if not o.context or not o.player or not o.pallet then
+        o.error = "Invalid context / player / pallet"
     end
 
     -- from :getClient()
@@ -661,35 +601,47 @@ function H3_Pallet:new(contextMenu, playerObj, worldObj, isVanillaPallet)
     return o
 end
 
+-- ============================================================================
+-- Hook for ContextMenu entry point
+-- ============================================================================
+
+-- returns bool for match, bool for isVP
+function CheckSpriteName(spriteName)
+    if not spriteName then
+        return false, false
+    end
+
+    if spriteName:find(import.keys.h3_spriteKey) then
+        return true, false -- false here is for isVanillaPallet
+    else
+        for _, key in pairs(import.keys) do
+            if spriteName == key then
+                return true, true
+            end
+        end
+    end
+end
+
 -- executes when OnFillWorldObjectContextMenu and calls H3_Pallet:new() if the square has eligble sprite
 local function Hook_OnRightClick(playerID, context, worldobjects, test)
     if not playerID or not context or not worldobjects or test then return end
 
+    -- get all objects in square
     for _, object in ipairs(worldobjects) do
         if object and object:getSquare() then
             local square = object:getSquare()
             local objects = square:getObjects()
+
+            -- for each object in square
             for i = 0, objects:size() - 1 do
-
                 local obj = objects:get(i)
-                if obj then
-                    local sprite = obj:getSprite()
-                    if sprite then
 
-                        -- check spriteName against registered keys
-                        local spriteName = sprite:getName()
-                        if spriteName:find(keys.h3_spriteKey) then
-                            H3_Pallet:new(context, getSpecificPlayer(playerID), obj, false) -- false here is for isVanillaPallet
-                            return
-                        else
-                            for _, key in pairs(keys) do
-                                if spriteName == key then
-                                    H3_Pallet:new(context, getSpecificPlayer(playerID), obj, true)
-                                    return
-                                end
-                            end
-                        end
-                    end
+                -- check spriteName against registered keys
+                local spriteName = obj and obj:getSprite() and obj:getSprite():getName()
+                local match, isVP = CheckSpriteName(spriteName)
+                if match then
+                    H3_Pallet:new(context, getSpecificPlayer(playerID), obj, isVP)
+                    return
                 end
             end
         end

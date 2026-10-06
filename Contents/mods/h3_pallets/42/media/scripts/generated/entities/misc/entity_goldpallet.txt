@@ -2,30 +2,21 @@ module Base
 {
     entity GoldPallet
     {
-        component UiConfig
+        component UiConfig 
         {
-            xuiSkin = default,
-            entityStyle = ES_H3GoldPallet,
-            uiEnabled = false,
+            xuiSkin = default, entityStyle = ES_H3GoldPallet, uiEnabled = false,
         }
         component SpriteConfig
         {
-            face SINGLE
-            {
-                layer
-                {
-                    row = location_military_knox_01_1,
-                }
-            }
+            face SINGLE { layer { row = location_military_knox_01_1, } }
         }        
         component CraftRecipe
         {
             timedAction = BuildLowHammer,
-            time = 50,
+            time = 200,
             SkillRequired = Woodwork:1,
             xpAward = Woodwork:10,
-            category = Furniture,
-            Tags = Carpentry;Furniture,
+            category = H3_Storage,
             Tooltip = Tooltip_H3_PalletEmptyTooltip,
             inputs
             {
