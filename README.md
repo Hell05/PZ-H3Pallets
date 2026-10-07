@@ -13,8 +13,6 @@ Items stackable on pallets:
 - Bricks
 
 To Do:
-- Investigate the vanilla pallet bugs
-- Test on localhost MP with another player
 - Scale down Tires texture
 - Ammo Pallets
 - Charcoal Pallet

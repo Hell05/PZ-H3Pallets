@@ -29,8 +29,10 @@ require "TimedActions/ISBaseTimedAction"
 H3_InteractPallet = ISBaseTimedAction:derive("H3_InteractPallet")
 local debugH3 = require("H3_GlobalUtils")
 
+local import = require("H3_DefineItemTables")
+local itemLookup = import and import.items
 -- ============================================================================
--- Helper functions
+-- Validation helper functions
 -- ============================================================================
 
 local function GetPalletModData(modData, pname)
@@ -86,7 +88,7 @@ end
 
 -- validates if pallet exists, if it has items and if player has access to required items
 function H3_InteractPallet:isValid()
-    debugH3.log("Shared | RUN: isValid()")
+    debugH3.log("Client | RUN: isValid()")
 
     if self.error then
         debugH3.warn(self.error, " isValid() fail")
@@ -98,33 +100,6 @@ function H3_InteractPallet:isValid()
         return false
     end
 
-    -- collect movableModData
-    self.movableData = GetPalletModData(self.pallet:getModData(), self.pname) or self.palletData
-
-    if not self.movableData then
-        debugH3.warn("Missing / failed to construct movableData isValid() fail")
-        return false
-    end
-    debugH3.log("isValid Shared Pallet movableData  | Items: " .. tostring(self.movableData.fullTypes))
-    debugH3.log("Total:" .. tostring(self.movableData.total) .. " | pname: " .. tostring(self.movableData.pname) .. " | ptable: " .. tostring(self.movableData.ptable))
-
-    -- if amount > 0 we are adding items to pallet so check if player has them
-    if self.amount > 0 then
-        local inventoryItems = self.player:getInventory()
-        local groundItems = buildUtil.getMaterialOnGround(self.player:getSquare())
-        if not PlayerHasAvailableItems(self.item, self.value, self.amount, inventoryItems, groundItems) then
-            return false
-        end
-
-    -- otherwise we are removing items from pallet, check if pallet has required contents
-    elseif self.amount < 0 then
-        local removeAmount = math.abs(self.amount)
-        if not PalletHasAvailableItems(self.movableData, self.item, self.value, removeAmount) then
-            return false
-        end
-    end
-
-    debugH3.log("isValid() ... Success!")
     return true
 end
 
@@ -159,6 +134,20 @@ end
 -- ============================================================================
 -- Inventory and pallet update logic
 -- ============================================================================
+
+local function GetResultSprite(itemName, total)
+    for _, data in ipairs(itemLookup) do
+        for _, itemType in ipairs(data.items) do
+            if itemType == itemName then
+                for _, stage in ipairs(data.stages) do
+                    if total == stage.amount then
+                        return stage.resultSprite
+                    end
+                end
+            end
+        end
+    end
+end
 
 -- updates the modData for the pallet ready to be transmitted
 local function UpdateModData(movableData, itemType, pname, value, amount)
@@ -199,37 +188,31 @@ local function UpdateModData(movableData, itemType, pname, value, amount)
 end
 
 -- returns filtered inventoryItems and groundItems tables with itemObjects
-local function GetRequiredItems(player, itemType, pname, value, amount)
-    local inventoryItems = player:getInventory()
-    local groundItems = buildUtil.getMaterialOnGround(player:getSquare())
-
-    -- check if player still has access to the items before starting to remove them
-    if not PlayerHasAvailableItems(itemType, value, amount, inventoryItems, groundItems) then
-        return false
-    end
+local function GetRequiredItems(itemType, pname, value, amount, allInventoryItems, allGroundItems)
 
     local found = 0
     local resultInvItems = {}
     local resultGrndItems = {}
 
     -- get from player inventory first, if enough then return items
-    local invItems = inventoryItems:getAllTypeRecurse(itemType)
-    for i = 0, invItems:size() - 1 do
-        local item = invItems:get(i)
+    local inventoryItems = allInventoryItems:getAllTypeRecurse(itemType)
+    for i = 0, inventoryItems:size() - 1 do
+        local itemObj = inventoryItems:get(i)
 
         if pname == "normal" then
-            resultInvItems[#resultInvItems + 1] = item
+            resultInvItems[#resultInvItems + 1] = itemObj
             found = found + 1
 
         elseif pname == "delta" then
-            if math.floor(item:getCurrentUsesFloat() * 100 + 0.5) / 100 == value then
-                resultInvItems[#resultInvItems + 1] = item
+            local itemDelta = math.floor(itemObj:getCurrentUsesFloat() * 100 + 0.5) / 100
+            if itemDelta == value then
+                resultInvItems[#resultInvItems + 1] = itemObj
                 found = found + 1
             end
 
         elseif pname ==  "condition" then
-            if item:getCondition() == value then
-                resultInvItems[#resultInvItems + 1] = item
+            if itemObj:getCondition() == value then
+                resultInvItems[#resultInvItems + 1] = itemObj
                 found = found + 1
             end
         end
@@ -240,23 +223,23 @@ local function GetRequiredItems(player, itemType, pname, value, amount)
     end
 
     -- check ground in 3x3 grid for the remaining items
-    local grndItems = groundItems[itemType]
-    if grndItems then
-        for _, item in ipairs(grndItems) do
+    local groundItems = allGroundItems[itemType]
+    if groundItems then
+        for _, itemObj in ipairs(groundItems) do
 
             if pname == "normal" then
-                resultGrndItems[#resultGrndItems + 1] = item
+                resultGrndItems[#resultGrndItems + 1] = itemObj
                 found = found + 1
 
             elseif pname == "delta" then
-                if math.floor(item:getCurrentUsesFloat() * 100 + 0.5) / 100 == value then
-                    resultGrndItems[#resultGrndItems + 1] = item
+                if math.floor(itemObj:getCurrentUsesFloat() * 100 + 0.5) / 100 == value then
+                    resultGrndItems[#resultGrndItems + 1] = itemObj
                     found = found + 1
                 end
 
             elseif pname ==  "condition" then
-                if item:getCondition() == value then
-                    resultGrndItems[#resultGrndItems + 1] = item
+                if itemObj:getCondition() == value then
+                    resultGrndItems[#resultGrndItems + 1] = itemObj
                     found = found + 1
                 end
             end
@@ -342,15 +325,49 @@ local function CreateItems(player, itemType, pname, value, amount)
 end
 
 function H3_InteractPallet:complete()
-    debugH3.log("Shared | RUN: complete()")
+    debugH3.log("Server | RUN: complete()")
+
+-- ============================================================================
+-- moved code from :isValid() for data validation on server side
+
+    debugH3.log("Server | Validating data...")
+    -- collect movableModData
+    self.movableData = GetPalletModData(self.pallet:getModData(), self.pname) or self.palletData
+
+    if not self.movableData then
+        debugH3.warn("Missing / failed to construct movableData isValid() fail")
+        return false
+    end
+    debugH3.log("Pallet movableData  | Items: " .. tostring(self.movableData.fullTypes))
+    debugH3.log("Total:" .. tostring(self.movableData.total) .. " | pname: " .. tostring(self.movableData.pname) .. " | ptable: " .. tostring(self.movableData.ptable))
+
+    -- if amount > 0 we are adding items to pallet so check if player has them
+    local allInventoryItems = self.player:getInventory()
+    local allGroundItems = buildUtil.getMaterialOnGround(self.player:getSquare())
+
+    if self.amount > 0 then
+        if not PlayerHasAvailableItems(self.item, self.value, self.amount, allInventoryItems, allGroundItems) then
+            return false
+        end
+
+    -- otherwise we are removing items from pallet, check if pallet has required contents
+    elseif self.amount < 0 then
+        local removeAmount = math.abs(self.amount)
+        if not PalletHasAvailableItems(self.movableData, self.item, self.value, removeAmount) then
+            return false
+        end
+    end
+
+-- ============================================================================
+
     if sharedDebug then
-        debugH3.log("Shared file Debug enabled, no changes will be made. Exiting.")
+        debugH3.log("Debug enabled, no server changes will be made. Exiting.")
         return false
     end
     -- if amount is positive then add items to pallet, consume items from player
     if self.amount > 0 then
 
-        local inventoryItems, groundItems = GetRequiredItems(self.player, self.item, self.pname, self.value, self.amount)
+        local inventoryItems, groundItems = GetRequiredItems(self.item, self.pname, self.value, self.amount, allInventoryItems, allGroundItems)
         if not ConsumeItems(self.player, self.amount, inventoryItems, groundItems) then
             return false
         end
@@ -374,6 +391,9 @@ function H3_InteractPallet:complete()
     debugH3.log("New Data: | H3_itemTotal:" .. tostring(modData.movableData.H3_itemTotal) .. " |  H3_itemProperty: " .. tostring(modData.movableData.H3_itemProperty) .. " | H3_itemPropertyData: " .. tostring(modData.movableData.H3_itemPropertyData))
 
     -- update and transmit sprite
+    if movableData.H3_itemTotal > 0 then
+        self.resultSprite = GetResultSprite(self.item, movableData.H3_itemTotal) or self.resultSprite
+    end
     self.pallet:setSprite(getSprite(self.resultSprite))
     self.pallet:transmitUpdatedSpriteToClients()
 
@@ -386,22 +406,23 @@ function H3_InteractPallet:getDuration()
     if self.player:isTimedActionInstant() then
         return 1;
     end
-    return 10 * math.abs(self.amount or 5)
+    return 45 + math.abs(self.amount or 5)
 end
 
-function H3_InteractPallet:new(playerObj, worldObj, square, resultSprite, propertyData, modifyByAmount, palletData)
-    local o = ISBaseTimedAction.new(self, playerObj)
+function H3_InteractPallet:new(player, pallet, square, resultSprite, item, pname, value, amount, palletData)
+    debugH3.log("Server | RUN: new()")
+    local o = ISBaseTimedAction.new(self, player)
     o.error = nil
 
     -- from client :sendRequest()
-	o.player = playerObj
-	o.pallet = worldObj
+	o.player = player
+	o.pallet = pallet
 	o.square = square
 	o.resultSprite = resultSprite
-	o.item = propertyData.type
-    o.pname = propertyData.pname  -- stores normal, delta or condition
-    o.value = propertyData.value  -- stores the value of pname
-    o.amount = modifyByAmount  -- can be positive or negative
+	o.item = item
+    o.pname = pname  -- stores normal, delta or condition
+    o.value = value  -- stores the value of pname
+    o.amount = amount  -- can be positive or negative
     o.palletData = palletData  -- stores movable modData regarding the pallet contents
 
     -- from :isValid()

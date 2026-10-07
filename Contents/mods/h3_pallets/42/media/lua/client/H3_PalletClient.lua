@@ -560,7 +560,7 @@ function H3_Pallet:sendRequest(sprite, amount, propertyData, mode)
     end
 
 	if luautils.walkAdj(self.player, self.pallet:getSquare(), false) then
-		ISTimedActionQueue.add(H3_InteractPallet:new(self.player, self.pallet, self.pallet:getSquare(), sprite, propertyData, amount, self.movableData))
+		ISTimedActionQueue.add(H3_InteractPallet:new(self.player, self.pallet, self.pallet:getSquare(), sprite, propertyData.type, propertyData.pname, propertyData.value, amount, self.movableData))
 	end
 
     return true
