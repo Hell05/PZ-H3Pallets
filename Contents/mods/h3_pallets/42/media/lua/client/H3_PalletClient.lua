@@ -350,7 +350,7 @@ local function isTable1_EntiryIn_Table2(table1, table2)
     if not table1 or not table2 then return end
 
     for _, filter in pairs(table2) do
-        for key, _ in pairs(table1) do
+        for _, key in pairs(table1) do
             if key == filter then
                 return true
             end
@@ -435,12 +435,13 @@ local function GetSpriteObj_ModData(modData, spriteName, isVanillaPallet)
     end
 
     local movableData = modData and modData.movableData
+    debugH3.log("movableData: ", movableData)
     if movableData then
         local fullTypes = movableData.H3_itemFullTypes or {}
         local total = movableData.H3_itemTotal or 0
         local fallback = {}
-        for _, key in pairs(fullTypes) do
-            fallback = { [key] = { normal = total, }, }
+        for _, key in ipairs(fullTypes) do
+            fallback[key] = { normal = total, }
         end
 
         return {
@@ -461,8 +462,8 @@ local function GetSpriteObj_ModData(modData, spriteName, isVanillaPallet)
                         local fullTypes = data.items or {}
                         local total = stage.amount or 0
                         local ptable = {}
-                        for _, key in pairs(fullTypes) do
-                            ptable = { [key] = { normal = total, }, }
+                        for _, key in ipairs(fullTypes) do
+                            ptable[key] = { normal = total, }
                         end
 
                         return {

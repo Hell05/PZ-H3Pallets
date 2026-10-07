@@ -162,10 +162,18 @@ local function UpdateModData(movableData, itemType, pname, value, amount)
     updateData.H3_itemTotal = movableData.total + amount
     if updateData.H3_itemTotal ~= 0 then
 
-        -- create an entry in fullTypes if there is none
         updateData.H3_itemFullTypes = movableData.fullTypes or {}
-        if not updateData.H3_itemFullTypes[itemType] then
-            updateData.H3_itemFullTypes[itemType] = true
+        -- create an entry in fullTypes if there is none
+        local exists = false
+        for _, existingType in ipairs(updateData.H3_itemFullTypes) do
+            if existingType == itemType then
+                exists = true
+                break
+            end
+        end
+
+        if not exists then
+            table.insert(updateData.H3_itemFullTypes, itemType)
         end
 
         local itemData = movableData.ptable[itemType] or {}
