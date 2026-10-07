@@ -1,23 +1,40 @@
 # PZ-H3Pallets
 
-Stack items on pallets! You can now interact with the empty pallets (or build new ones from the build menu) and stack over 20 different items on them!
+Stack items on pallets! You can now interact with the empty pallets and stack 39 different items on them!
+
+Pallets accept partially filled sacks, propane tanks and damaged or worn tires and will return them in the same condition when taken.
+You can also pickup the pallets with items on them (unless they are too heavy of course).
+
+Use existing pallets in the world or make your own from the building menu Storage category.
+Vanilla pallets have their values updated so they match the displayed quantity.
+Empty pallets will list all categories and items compatible.
+Pallets with items on them only display relevant options.
+
+Mix and match, some pallets accept multiple different items e.g. Ammo Cartons.
+
+Every stage has a visual change in quantity!
+Add or Remove in steps or larger quantities in one go.
+
+
+Safe to add mid save (pallets that have already been loaded will still show the vanilla take choice but once you interact it goes away).
+Since this mod adds tiles removing it mid save is not recommended!
+Fully MP compatible! Server authoritative logic that has been tested on a dedicated server.
+Unlikely to be compatible with other Pallet mods that rely on or modify the vanilla ISTakeBricks TimedAction.
+
 
 Items stackable on pallets:
 - All ingots
 - Propane Tanks
-- Sacks of Material (Gravel, Sand, Concrete etc)
+- Sacks of Material (Dirt, Sand, Gravel, Clay)
+- Bags of Concrete
+- Bags of Plaster
 - Logs & Planks
 - Metal Sheets
 - Tires
 - Cash
+- Ammo Cartons
+- Fuel (Coal, Charcoal, Coke)
 - Bricks
-
-To Do:
-- Scale down Tires texture
-- Ammo Pallets
-- Charcoal Pallet
-- Bricks (needs more sprites)
-- Mixed Boxed Crate
 
 New logic client side is as follows:
 - ClickHook -> palletMenu onto the right click context menu when there is a valid sprite in square clicked

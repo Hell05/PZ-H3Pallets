@@ -1,6 +1,6 @@
 ---@diagnostic disable: undefined-global
 -- ============================================================================
--- This file handles the action processing for the pallets
+-- This file handles the action processing for the pallets [Version 3]
 -- ============================================================================
 -- Did you know?
 

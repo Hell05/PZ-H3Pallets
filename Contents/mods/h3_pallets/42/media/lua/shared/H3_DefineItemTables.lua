@@ -165,6 +165,7 @@ local items = {
             {amount = 90, resultSprite = "h3_pallet_06_17"},
         },
     },
+    --[[ disabled for now, planning to add it back in later
     {
         items = { "Base.AluminumIngot", },
         icon = "media/textures/Item_Ingot_Aluminum.png",
@@ -190,7 +191,7 @@ local items = {
             {amount = 85, resultSprite = "h3_pallet_07_16"},
             {amount = 90, resultSprite = "h3_pallet_07_17"},
         },
-    },
+    }, --]]
     {
         items = { "Base.PropaneTank", },
         icon = "Item_PropaneTank.png",
@@ -221,7 +222,14 @@ local items = {
         category = "Material",
         stages = {
             {amount =  0, resultSprite = keys.vEmptyPallet},
-            {amount = 32, resultSprite = keys.vBrickPallet},
+            {amount =  8, resultSprite = "h3_pallet_23_0"},
+            {amount = 16, resultSprite = "h3_pallet_23_1"},
+            {amount = 24, resultSprite = "h3_pallet_23_2"},
+            {amount = 32, resultSprite = "h3_pallet_23_3"},
+            {amount = 40, resultSprite = "h3_pallet_23_4"},
+            {amount = 48, resultSprite = "h3_pallet_23_5"},
+            {amount = 56, resultSprite = "h3_pallet_23_6"},
+            {amount = 64, resultSprite = "h3_pallet_23_7"},
         },
     },
     {
@@ -253,7 +261,7 @@ local items = {
     {
         items = { "Base.Dirtbag", },
         icon = "Item_Sandbag.png",
-        category = "Material",
+        category = "Sack",
         stages = {
             {amount =  0, resultSprite = keys.vEmptyPallet},
             {amount =  3, resultSprite = "h3_pallet_11_0"},
@@ -277,7 +285,7 @@ local items = {
     {
         items = { "Base.Sandbag", },
         icon = "Item_Sandbag.png",
-        category = "Material",
+        category = "Sack",
         stages = {
             {amount =  0, resultSprite = keys.vEmptyPallet},
             {amount =  3, resultSprite = "h3_pallet_12_0"},
@@ -301,7 +309,7 @@ local items = {
     {
         items = { "Base.Gravelbag", },
         icon = "Item_Gravelbag.png",
-        category = "Material",
+        category = "Sack",
         stages = {
             {amount =  0, resultSprite = keys.vEmptyPallet},
             {amount =  3, resultSprite = "h3_pallet_13_0"},
@@ -325,7 +333,7 @@ local items = {
     {
         items = { "Base.Claybag", },
         icon = "Item_Sandbag.png",
-        category = "Material",
+        category = "Sack",
         stages = {
             {amount =  0, resultSprite = keys.vEmptyPallet},
             {amount =  3, resultSprite = "h3_pallet_14_0"},
@@ -440,6 +448,7 @@ local items = {
         },
         icon = "Item_CarTire.png",
         category = "Tire",
+        mechanics = true,
         stages = {
             {amount = 0, resultSprite = keys.vEmptyPallet},
             {amount = 1, resultSprite = "h3_pallet_19_0"},
@@ -457,6 +466,7 @@ local items = {
         },
         icon = "Item_CarTire.png",
         category = "Tire",
+        mechanics = true,
         stages = {
             {amount = 0, resultSprite = keys.vEmptyPallet},
             {amount = 1, resultSprite = "h3_pallet_19_5"},
@@ -474,6 +484,7 @@ local items = {
         },
         icon = "Item_CarTire.png",
         category = "Tire",
+        mechanics = true,
         stages = {
             {amount = 0, resultSprite = keys.vEmptyPallet},
             {amount = 1, resultSprite = "h3_pallet_19_10"},
@@ -539,19 +550,90 @@ local items = {
             {amount = 192, resultSprite = "h3_pallet_20_47"},
         },
     },
+    {
+        items = {
+            "Base.Charcoal",
+            "Base.CharcoalCrafted",
+            "Base.Coke"
+        },
+        icon = "Item_Charcoal.png",
+        category = "Fuel",
+        stages = {
+            {amount =   0, resultSprite = keys.vEmptyPallet},
+            {amount =  12, resultSprite = "h3_pallet_21_0"},
+            {amount =  24, resultSprite = "h3_pallet_21_1"},
+            {amount =  36, resultSprite = "h3_pallet_21_2"},
+            {amount =  48, resultSprite = "h3_pallet_21_3"},
+            {amount =  60, resultSprite = "h3_pallet_21_4"},
+            {amount =  72, resultSprite = "h3_pallet_21_5"},
+            {amount =  84, resultSprite = "h3_pallet_21_6"},
+            {amount =  96, resultSprite = "h3_pallet_21_7"},
+            {amount = 108, resultSprite = "h3_pallet_21_8"},
+            {amount = 120, resultSprite = "h3_pallet_21_9"},
+            {amount = 132, resultSprite = "h3_pallet_21_10"},
+            {amount = 144, resultSprite = "h3_pallet_21_11"},
+            {amount = 156, resultSprite = "h3_pallet_21_12"},
+            {amount = 168, resultSprite = "h3_pallet_21_13"},
+            {amount = 180, resultSprite = "h3_pallet_21_14"},
+            {amount = 192, resultSprite = "h3_pallet_21_15"},
+            {amount = 204, resultSprite = "h3_pallet_21_16"},
+            {amount = 216, resultSprite = "h3_pallet_21_17"},
+        },
+    },
+    {
+        items = {
+            "Base.308Carton",
+            "Base.556Carton",
+            "Base.3030Carton",
+            "Base.Bullets357Carton",
+            "Base.Bullets38Carton",
+            "Base.Bullets44Carton",
+            "Base.Bullets45Carton",
+            "Base.Bullets9mmCarton",
+            "Base.ShotgunShellsCarton",
+        },
+        icon = "Item_AmmoCase.png",
+        category = "Ammo",
+        stages = {
+            {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount =  1, resultSprite = "h3_pallet_22_0"},
+            {amount =  2, resultSprite = "h3_pallet_22_1"},
+            {amount =  3, resultSprite = "h3_pallet_22_2"},
+            {amount =  4, resultSprite = "h3_pallet_22_3"},
+            {amount =  5, resultSprite = "h3_pallet_22_4"},
+            {amount =  6, resultSprite = "h3_pallet_22_5"},
+            {amount =  7, resultSprite = "h3_pallet_22_6"},
+            {amount =  8, resultSprite = "h3_pallet_22_7"},
+            {amount =  9, resultSprite = "h3_pallet_22_8"},
+            {amount = 10, resultSprite = "h3_pallet_22_9"},
+            {amount = 11, resultSprite = "h3_pallet_22_10"},
+            {amount = 12, resultSprite = "h3_pallet_22_11"},
+            {amount = 13, resultSprite = "h3_pallet_22_12"},
+            {amount = 14, resultSprite = "h3_pallet_22_13"},
+            {amount = 15, resultSprite = "h3_pallet_22_14"},
+            {amount = 16, resultSprite = "h3_pallet_22_15"},
+            {amount = 17, resultSprite = "h3_pallet_22_16"},
+            {amount = 18, resultSprite = "h3_pallet_22_17"},
+        },
+    },
 }
 
 -- ============================================================================
 -- Vanilla pallet resolver section
 -- ============================================================================
--- this == brick def above but when I add custom textures I will need it anyway
+
 local brickResolver = {
     {
         items = { "Base.ClayBrick", },
         icon = "Item_ClayBrick_Fired.png",
         stages = {
             {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount = 24, resultSprite = "h3_pallet_23_2"},
             {amount = 32, resultSprite = keys.vBrickPallet},
+            {amount = 40, resultSprite = "h3_pallet_23_4"},
+            {amount = 48, resultSprite = "h3_pallet_23_5"},
+            {amount = 56, resultSprite = "h3_pallet_23_6"},
+            {amount = 64, resultSprite = "h3_pallet_23_7"},
         },
     },
 }

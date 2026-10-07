@@ -68,11 +68,13 @@ local function UI_CreateItemOption(self, subMenu, data, stage, mode, amount, act
     end
 
     -- attach mechanics text
-    for i = 1, 3 do
-        if propertyData.type:find(tostring(i), 1, true) then
-            local mechanicsItemText = "IGUI_VehicleType_" .. tostring(i)
-            displayText = displayText .. " (" .. tostring(getText(mechanicsItemText)) .. ")"
-            break
+    if data.mechanics then
+        for i = 1, 3 do
+            if propertyData.type:find(tostring(i), 1, true) then
+                local mechanicsItemText = "IGUI_VehicleType_" .. tostring(i)
+                displayText = displayText .. " (" .. tostring(getText(mechanicsItemText)) .. ")"
+                break
+            end
         end
     end
 

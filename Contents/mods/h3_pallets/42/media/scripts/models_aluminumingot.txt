@@ -1,9 +1,0 @@
-module Base
-{    
-    model AluminumIngot
-    {
-        mesh = WorldItems/Ingot_Iron,
-        texture = Ingot_Aluminum,
-        scale = 0.09,
-    }
-}
