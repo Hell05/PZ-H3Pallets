@@ -45,9 +45,9 @@ New logic client side is as follows:
 
 Shared logic (Authoritative):
 - Run :new  	-> Read in the information and initialise
-- Run :isValid  -> Confirm information independently
+- Run :isValid  -> Checks if pallet exists
 - Run :actions  -> handles animations, walking etc (unchanged from vanilla ISTakeBricks)
-- Run :complete -> This calls UpdateInventory and UpdateModData as well as changes the sprite
+- Run :complete -> Validates inventories and calls UpdateInventory and UpdateModData as well as changes the sprite
 
 
 This mod was created primarily for SpaghettiZ's Bolognese server but anyone is welcome to use it and repack it in their own server mods.
