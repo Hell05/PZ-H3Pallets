@@ -35,9 +35,9 @@ local import = require("H3_DefineItemTables")
 
 local itemLookup = import and import.items
 local keys = import and import.keys
-local vanillaPalletTable = import and import.vanillaPalletTable
+local palletTableMapper = import and import.palletTableMapper
 
-if not itemLookup or not keys or not vanillaPalletTable then
+if not itemLookup or not keys or not palletTableMapper then
     debugH3.error("Import(s) missing! [H3_PalletClient.lua] is returning safely.")
     return
 end
@@ -360,9 +360,9 @@ local function isTable1_EntiryIn_Table2(table1, table2)
 end
 
 -- returns relevant snippets of the lookupTable
-local function GetItemsTableForPallet(movableData, spriteName, isVanillaPallet)
-    if isVanillaPallet then
-        return vanillaPalletTable[spriteName]
+local function GetItemsTableForPallet(movableData, spriteName, isSpecialPallet)
+    if isSpecialPallet then
+        return palletTableMapper[spriteName]
     end
 
     if movableData then
@@ -410,7 +410,7 @@ function H3_Pallet:getShared()
     self.groundItems = groundItems or {}
 
     -- filters the lookup to return relevant items only
-    local lookupTable = GetItemsTableForPallet(self.movableData, self.spriteName, self.isVP)
+    local lookupTable = GetItemsTableForPallet(self.movableData, self.spriteName, self.isSP)
 
     if not lookupTable then
         self.error = "Missing lookupTable."
@@ -423,7 +423,7 @@ function H3_Pallet:getShared()
 end
 
 -- returns movableData after reading or creating modData
-local function GetSpriteObj_ModData(modData, spriteName, isVanillaPallet)
+local function GetSpriteObj_ModData(modData, spriteName, isSpecialPallet)
     -- if its an empty pallet it wont have modData so return default
     if spriteName == keys.vEmptyPallet then
         return {
@@ -433,7 +433,6 @@ local function GetSpriteObj_ModData(modData, spriteName, isVanillaPallet)
             ptable = {},
         }
     end
-
     local movableData = modData and modData.movableData
     debugH3.log("movableData: ", movableData)
     if movableData then
@@ -454,8 +453,15 @@ local function GetSpriteObj_ModData(modData, spriteName, isVanillaPallet)
 
     -- if pallet doesn't have modData then we need to construct it from spriteName (this will only run for vanilla pallets)
     if spriteName then
-        if isVanillaPallet then
-            local itemsTable = vanillaPalletTable[spriteName] or {}
+        if isSpecialPallet then
+            -- converting the elevated sprites into regular sprites for the lookup
+            if spriteName == keys.vGoldPallet3 then
+                spriteName = keys.vGoldPallet1
+            elseif spriteName == keys.vGoldPallet4 then
+                spriteName = keys.vGoldPallet2
+            end
+
+            local itemsTable = palletTableMapper[spriteName] or {}
             for _, data in ipairs(itemsTable) do
                 for _, stage in ipairs(data.stages) do
                     if spriteName == stage.resultSprite then
@@ -497,7 +503,7 @@ function H3_Pallet:getClient()
     end
 
     -- read in pallet modData.movable values (only modData.movable travels with the pallet when its picked up, regular modData gets lost)
-    self.movableData = GetSpriteObj_ModData(self.pallet:getModData(), self.spriteName, self.isVP)
+    self.movableData = GetSpriteObj_ModData(self.pallet:getModData(), self.spriteName, self.isSP)
     debugH3.log("Clientside movableData | Items:  ", self.movableData.fullTypes)
     debugH3.log("Total:" .. tostring(self.movableData.total) .. " | pname: " .. tostring(self.movableData.pname) .. " | ptable: " .. tostring(self.movableData.ptable))
 
@@ -569,7 +575,7 @@ function H3_Pallet:sendRequest(sprite, amount, propertyData, mode)
     return true
 end
 
-function H3_Pallet:new(contextMenu, playerObj, worldObj, isVanillaPallet)
+function H3_Pallet:new(contextMenu, playerObj, worldObj, isSpecialPallet)
     local o = setmetatable({}, H3_Pallet)
     o.error = nil
 
@@ -577,7 +583,7 @@ function H3_Pallet:new(contextMenu, playerObj, worldObj, isVanillaPallet)
     o.context = contextMenu
     o.player = playerObj
     o.pallet = worldObj
-    o.isVP = isVanillaPallet
+    o.isSP = isSpecialPallet
 
     if not o.context or not o.player or not o.pallet then
         o.error = "Invalid context / player / pallet"
@@ -607,20 +613,18 @@ end
 -- Hook for ContextMenu entry point
 -- ============================================================================
 
--- returns bool for match, bool for isVP
+-- returns bool for match, bool for isSP
 function CheckSpriteName(spriteName)
     if not spriteName then
         return false, false
     end
-
-    if spriteName:find(import.keys.h3_spriteKey) then
-        return true, false -- false here is for isVanillaPallet
-    else
-        for _, key in pairs(import.keys) do
-            if spriteName == key then
-                return true, true
-            end
+    for _, key in pairs(keys) do
+        if spriteName == key then
+            return true, true
         end
+    end
+    if spriteName:find(keys.h3_spriteKey) then
+        return true, false -- false here is for isSpecialPallet
     end
 end
 
@@ -640,9 +644,9 @@ local function Hook_OnRightClick(playerID, context, worldobjects, test)
 
                 -- check spriteName against registered keys
                 local spriteName = obj and obj:getSprite() and obj:getSprite():getName()
-                local match, isVP = CheckSpriteName(spriteName)
+                local match, isSP = CheckSpriteName(spriteName)
                 if match then
-                    H3_Pallet:new(context, getSpecificPlayer(playerID), obj, isVP)
+                    H3_Pallet:new(context, getSpecificPlayer(playerID), obj, isSP)
                     return
                 end
             end

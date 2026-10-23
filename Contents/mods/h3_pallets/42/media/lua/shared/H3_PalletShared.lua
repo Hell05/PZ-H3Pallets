@@ -31,6 +31,7 @@ local debugH3 = require("H3_GlobalUtils")
 
 local import = require("H3_DefineItemTables")
 local itemLookup = import and import.items
+local keys = import and import.keys
 -- ============================================================================
 -- Validation helper functions
 -- ============================================================================
@@ -75,7 +76,7 @@ local function PlayerHasAvailableItems(itemType, value, amount, inventoryItems, 
 end
 
 local function PalletHasAvailableItems(movableData, itemType, value, removeAmount)
-    local available = movableData.ptable[itemType][value]
+    local available = movableData and movableData.ptable and movableData.ptable[itemType] and movableData.ptable[itemType][value] or 0
     debugH3.log("Item: " .. tostring(itemType) .. " |  Property: " .. tostring(movableData.pname) .. " | Total: " .. tostring(movableData.total) .. " | Value: " .. tostring(value) .. " | Available: " .. tostring(available))
 
     if removeAmount > movableData.total or removeAmount > available then
@@ -401,6 +402,8 @@ function H3_InteractPallet:complete()
     -- update and transmit sprite
     if movableData.H3_itemTotal > 0 then
         self.resultSprite = GetResultSprite(self.item, movableData.H3_itemTotal) or self.resultSprite
+    else
+        self.resultSprite = keys.vEmptyPallet
     end
     self.pallet:setSprite(getSprite(self.resultSprite))
     self.pallet:transmitUpdatedSpriteToClients()

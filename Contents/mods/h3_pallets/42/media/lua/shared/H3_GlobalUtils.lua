@@ -3,7 +3,7 @@
 -- Global Utility functions used by multiple files
 -- ============================================================================
 
-local debugLogging = true  -- toggle off if you want to hide generic logging and safe warnings
+local debugLogging = false  -- toggle off if you want to hide generic logging and safe warnings
 
 local debugH3 = {}
 function debugH3.log(text1, text2, text3)

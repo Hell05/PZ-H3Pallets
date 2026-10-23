@@ -2,10 +2,14 @@
 -- Define pallet items and their sprite / stage amounts here
 -- ============================================================================
 local keys = {
-    h3_spriteKey = "h3_pallet",                  -- modded pallets all should have this in their spriteNames
-    vEmptyPallet = "construction_01_5",          -- vanilla empty (brick) pallet with no option
-    vBrickPallet = "construction_01_4",          -- vanilla brick pallet with the Take 20 bricks option
-    vGoldPallet = "location_military_knox_01_1", -- vanilla gold pallet with Take 30 ingots option
+    h3_spriteKey = "h3_pallet",                   -- modded pallets all should have this in their spriteNames
+    vEmptyPallet = "construction_01_5",           -- vanilla empty (brick) pallet with no option
+    vBrickPallet = "construction_01_4",           -- vanilla brick pallet with the Take 20 bricks option
+    vGoldPallet1 = "location_military_knox_01_1", -- vanilla gold pallet with Take 30 ingots option
+    vGoldPallet2 = "location_military_knox_01_2", -- pallet with 90 ingots normally not ineractable
+    vGoldPallet3 = "location_military_knox_01_3", -- same as Pallet1 but elevated
+    vGoldPallet4 = "location_military_knox_01_4", -- same as Pallet2 but elevated
+    dLogPallet48 = "h3_pallet_16_5"               -- mapper for deprecated log pallet final stage
 }
 
 local items = {
@@ -217,22 +221,6 @@ local items = {
         },
     },
     {
-        items = { "Base.ClayBrick", },
-        icon = "Item_ClayBrick_Fired.png",
-        category = "Material",
-        stages = {
-            {amount =  0, resultSprite = keys.vEmptyPallet},
-            {amount =  8, resultSprite = "h3_pallet_23_0"},
-            {amount = 16, resultSprite = "h3_pallet_23_1"},
-            {amount = 24, resultSprite = "h3_pallet_23_2"},
-            {amount = 32, resultSprite = "h3_pallet_23_3"},
-            {amount = 40, resultSprite = "h3_pallet_23_4"},
-            {amount = 48, resultSprite = "h3_pallet_23_5"},
-            {amount = 56, resultSprite = "h3_pallet_23_6"},
-            {amount = 64, resultSprite = "h3_pallet_23_7"},
-        },
-    },
-    {
         items = { "Base.ConcretePowder", },
         icon = "Item_Concrete_Powder.png",
         category = "Material",
@@ -380,6 +368,7 @@ local items = {
             {amount = 18, resultSprite = "h3_pallet_15_17"},
         },
     },
+    --[[ deprecated, replaced by new sprites, resolver to prevent save breaks
     {
         items = { "Base.Log", },
         icon = "Item_Logs.png",
@@ -392,6 +381,24 @@ local items = {
             {amount = 32, resultSprite = "h3_pallet_16_3"},
             {amount = 40, resultSprite = "h3_pallet_16_4"},
             {amount = 48, resultSprite = "h3_pallet_16_5"},
+        },
+    }, --]]
+    {
+        items = { "Base.Log", },
+        icon = "Item_Logs.png",
+        category = "Material",
+        stages = {
+            {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount =  4, resultSprite = "h3_pallet_29_0"},
+            {amount =  8, resultSprite = "h3_pallet_29_1"},
+            {amount = 12, resultSprite = "h3_pallet_29_2"},
+            {amount = 16, resultSprite = "h3_pallet_29_3"},
+            {amount = 20, resultSprite = "h3_pallet_29_4"},
+            {amount = 24, resultSprite = "h3_pallet_29_5"},
+            {amount = 28, resultSprite = "h3_pallet_29_6"},
+            {amount = 32, resultSprite = "h3_pallet_29_7"},
+            {amount = 36, resultSprite = "h3_pallet_29_8"},
+            {amount = 40, resultSprite = "h3_pallet_29_9"},
         },
     },
     {
@@ -616,6 +623,142 @@ local items = {
             {amount = 18, resultSprite = "h3_pallet_22_17"},
         },
     },
+    {
+        items = { "Base.ClayBrick", },
+        icon = "Item_ClayBrick_Fired.png",
+        category = "Material",
+        stages = {
+            {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount =  8, resultSprite = "h3_pallet_23_0"},
+            {amount = 16, resultSprite = "h3_pallet_23_1"},
+            {amount = 24, resultSprite = "h3_pallet_23_2"},
+            {amount = 32, resultSprite = "h3_pallet_23_3"},
+            {amount = 40, resultSprite = "h3_pallet_23_4"},
+            {amount = 48, resultSprite = "h3_pallet_23_5"},
+            {amount = 56, resultSprite = "h3_pallet_23_6"},
+            {amount = 64, resultSprite = "h3_pallet_23_7"},
+        },
+    },
+    {
+        items = { "Base.StoneBlock", },
+        icon = "Item_RoughBlock.png",
+        category = "Material",
+        stages = {
+            {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount =  8, resultSprite = "h3_pallet_24_0"},
+            {amount = 16, resultSprite = "h3_pallet_24_1"},
+            {amount = 24, resultSprite = "h3_pallet_24_2"},
+            {amount = 32, resultSprite = "h3_pallet_24_3"},
+            {amount = 40, resultSprite = "h3_pallet_24_4"},
+            {amount = 48, resultSprite = "h3_pallet_24_5"},
+            {amount = 56, resultSprite = "h3_pallet_24_6"},
+            {amount = 64, resultSprite = "h3_pallet_24_7"},
+        },
+    },
+    {
+        items = { "Base.SteelBar", },
+        icon = "Item_SteelBar_Whole.png",
+        category = "Material",
+        stages = {
+            {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount =  4, resultSprite = "h3_pallet_25_0"},
+            {amount =  8, resultSprite = "h3_pallet_25_1"},
+            {amount = 12, resultSprite = "h3_pallet_25_2"},
+            {amount = 16, resultSprite = "h3_pallet_25_3"},
+            {amount = 20, resultSprite = "h3_pallet_25_4"},
+            {amount = 24, resultSprite = "h3_pallet_25_5"},
+            {amount = 28, resultSprite = "h3_pallet_25_6"},
+            {amount = 32, resultSprite = "h3_pallet_25_7"},
+            {amount = 36, resultSprite = "h3_pallet_25_8"},
+            {amount = 40, resultSprite = "h3_pallet_25_9"},
+            {amount = 44, resultSprite = "h3_pallet_25_10"},
+            {amount = 48, resultSprite = "h3_pallet_25_11"},
+            {amount = 52, resultSprite = "h3_pallet_25_12"},
+            {amount = 56, resultSprite = "h3_pallet_25_13"},
+            {amount = 60, resultSprite = "h3_pallet_25_14"},
+            {amount = 64, resultSprite = "h3_pallet_25_15"},
+            {amount = 68, resultSprite = "h3_pallet_25_16"},
+            {amount = 72, resultSprite = "h3_pallet_25_17"},
+        },
+    },
+    {
+        items = { "Base.IronBar", },
+        icon = "Item_IronBar_Whole.png",
+        category = "Material",
+        stages = {
+            {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount =  4, resultSprite = "h3_pallet_26_0"},
+            {amount =  8, resultSprite = "h3_pallet_26_1"},
+            {amount = 12, resultSprite = "h3_pallet_26_2"},
+            {amount = 16, resultSprite = "h3_pallet_26_3"},
+            {amount = 20, resultSprite = "h3_pallet_26_4"},
+            {amount = 24, resultSprite = "h3_pallet_26_5"},
+            {amount = 28, resultSprite = "h3_pallet_26_6"},
+            {amount = 32, resultSprite = "h3_pallet_26_7"},
+            {amount = 36, resultSprite = "h3_pallet_26_8"},
+            {amount = 40, resultSprite = "h3_pallet_26_9"},
+            {amount = 44, resultSprite = "h3_pallet_26_10"},
+            {amount = 48, resultSprite = "h3_pallet_26_11"},
+            {amount = 52, resultSprite = "h3_pallet_26_12"},
+            {amount = 56, resultSprite = "h3_pallet_26_13"},
+            {amount = 60, resultSprite = "h3_pallet_26_14"},
+            {amount = 64, resultSprite = "h3_pallet_26_15"},
+            {amount = 68, resultSprite = "h3_pallet_26_16"},
+            {amount = 72, resultSprite = "h3_pallet_26_17"},
+        },
+    },
+    {
+        items = { "Base.MetalBar", },
+        icon = "Item_SteelRod_Full.png",
+        category = "Material",
+        stages = {
+            {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount =  4, resultSprite = "h3_pallet_27_0"},
+            {amount =  8, resultSprite = "h3_pallet_27_1"},
+            {amount = 12, resultSprite = "h3_pallet_27_2"},
+            {amount = 16, resultSprite = "h3_pallet_27_3"},
+            {amount = 20, resultSprite = "h3_pallet_27_4"},
+            {amount = 24, resultSprite = "h3_pallet_27_5"},
+            {amount = 28, resultSprite = "h3_pallet_27_6"},
+            {amount = 32, resultSprite = "h3_pallet_27_7"},
+            {amount = 36, resultSprite = "h3_pallet_27_8"},
+            {amount = 40, resultSprite = "h3_pallet_27_9"},
+            {amount = 44, resultSprite = "h3_pallet_27_10"},
+            {amount = 48, resultSprite = "h3_pallet_27_11"},
+            {amount = 52, resultSprite = "h3_pallet_27_12"},
+            {amount = 56, resultSprite = "h3_pallet_27_13"},
+            {amount = 60, resultSprite = "h3_pallet_27_14"},
+            {amount = 64, resultSprite = "h3_pallet_27_15"},
+            {amount = 68, resultSprite = "h3_pallet_27_16"},
+            {amount = 72, resultSprite = "h3_pallet_27_17"},
+        },
+    },
+    {
+        items = { "Base.MetalPipe", },
+        icon = "Item_MetalTube.png",
+        category = "Material",
+        stages = {
+            {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount =  4, resultSprite = "h3_pallet_28_0"},
+            {amount =  8, resultSprite = "h3_pallet_28_1"},
+            {amount = 12, resultSprite = "h3_pallet_28_2"},
+            {amount = 16, resultSprite = "h3_pallet_28_3"},
+            {amount = 20, resultSprite = "h3_pallet_28_4"},
+            {amount = 24, resultSprite = "h3_pallet_28_5"},
+            {amount = 28, resultSprite = "h3_pallet_28_6"},
+            {amount = 32, resultSprite = "h3_pallet_28_7"},
+            {amount = 36, resultSprite = "h3_pallet_28_8"},
+            {amount = 40, resultSprite = "h3_pallet_28_9"},
+            {amount = 44, resultSprite = "h3_pallet_28_10"},
+            {amount = 48, resultSprite = "h3_pallet_28_11"},
+            {amount = 52, resultSprite = "h3_pallet_28_12"},
+            {amount = 56, resultSprite = "h3_pallet_28_13"},
+            {amount = 60, resultSprite = "h3_pallet_28_14"},
+            {amount = 64, resultSprite = "h3_pallet_28_15"},
+            {amount = 68, resultSprite = "h3_pallet_28_16"},
+            {amount = 72, resultSprite = "h3_pallet_28_17"},
+        },
+    },
 }
 
 -- ============================================================================
@@ -640,14 +783,14 @@ local brickResolver = {
 
 -- only need 1 stage below vanilla sprite since options are Take or Take (All)
 -- Add (All) option is variable based on inventory available though
-local goldResolver = {
+local goldResolver1 = {
     {
         items = { "Base.GoldBar", },
         icon = "Item_Ingot_Gold.png",
         stages = {
             {amount =  0, resultSprite = keys.vEmptyPallet},
             {amount = 40, resultSprite = "h3_pallet_02_7"},
-            {amount = 45, resultSprite = keys.vGoldPallet},
+            {amount = 45, resultSprite = keys.vGoldPallet1},
             {amount = 50, resultSprite = "h3_pallet_02_9"},
             {amount = 55, resultSprite = "h3_pallet_02_10"},
             {amount = 60, resultSprite = "h3_pallet_02_11"},
@@ -661,14 +804,40 @@ local goldResolver = {
     },
 }
 
-local vanillaPalletTable = {
+local goldResolver2 = {
+    {
+        items = { "Base.GoldBar", },
+        icon = "Item_Ingot_Gold.png",
+        stages = {
+            {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount = 85, resultSprite = "h3_pallet_02_16"},
+            {amount = 90, resultSprite = keys.vGoldPallet2},
+        },
+    },
+}
+
+local logResolver = {
+    {
+        items = { "Base.Log", },
+        icon = "Item_Logs.png",
+        stages = {
+            {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount = 40, resultSprite = "h3_pallet_29_9"},
+            {amount = 48, resultSprite = keys.dLogPallet48},
+        },
+    },
+}
+
+local palletTableMapper = {
     [keys.vEmptyPallet] = items,
     [keys.vBrickPallet] = brickResolver,
-    [keys.vGoldPallet] = goldResolver,
+    [keys.vGoldPallet1] = goldResolver1,
+    [keys.vGoldPallet2] = goldResolver2,
+    [keys.dLogPallet48] = logResolver,
 }
 
 return {
     items = items,
     keys = keys,
-    vanillaPalletTable = vanillaPalletTable
+    palletTableMapper = palletTableMapper
 }
