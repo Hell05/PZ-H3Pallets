@@ -10,6 +10,7 @@ module Base
         }
         component SpriteConfig
         {
+            health = 120,
             face SINGLE
             {
                 layer
