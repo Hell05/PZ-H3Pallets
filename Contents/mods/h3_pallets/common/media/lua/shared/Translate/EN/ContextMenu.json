@@ -3,12 +3,18 @@
 
     "ContextMenu_H3_PalletCategory_Add_Ingot":          "Ingots",
     "ContextMenu_H3_PalletCategory_Add_PropaneTank":    "Propane Tanks",
+    "ContextMenu_H3_PalletCategory_Add_Bag":            "Bags",
     "ContextMenu_H3_PalletCategory_Add_Sack":           "Sacks",
     "ContextMenu_H3_PalletCategory_Add_Material":       "Materials",
     "ContextMenu_H3_PalletCategory_Add_Tire":           "Tires",
     "ContextMenu_H3_PalletCategory_Add_Money":          "Stacks of Cash",
     "ContextMenu_H3_PalletCategory_Add_Fuel":           "Fuel",
     "ContextMenu_H3_PalletCategory_Add_Ammo":           "Ammo Cartons",
+    "ContextMenu_H3_PalletCategory_Add_Paint":          "Paint Cans",
+    "ContextMenu_H3_PalletCategory_Add_Box":            "Packed Boxes",
+    "ContextMenu_H3_PalletCategory_Add_BoxSteel":       "Steel",
+    "ContextMenu_H3_PalletCategory_Add_BoxIron":        "Iron",
+    "ContextMenu_H3_PalletCategory_Add_BoxOther":       "Other",
 
     "ContextMenu_H3_PalletAction_Add":                  "Add to Pallet",
     "ContextMenu_H3_PalletAction_Remove":               "Take from Pallet",

@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 -- ============================================================================
 -- Define pallet items and their sprite / stage amounts here
 -- ============================================================================
@@ -223,7 +224,7 @@ local items = {
     {
         items = { "Base.ConcretePowder", },
         icon = "Item_Concrete_Powder.png",
-        category = "Material",
+        category = "Bag",
         stages = {
             {amount =  0, resultSprite = keys.vEmptyPallet},
             {amount =  1, resultSprite = "h3_pallet_10_0"},
@@ -345,7 +346,7 @@ local items = {
     {
         items = { "Base.PlasterPowder", },
         icon = "Item_Plaster_Powder.png",
-        category = "Material",
+        category = "Bag",
         stages = {
             {amount =  0, resultSprite = keys.vEmptyPallet},
             {amount =  1, resultSprite = "h3_pallet_15_0"},
@@ -419,32 +420,6 @@ local items = {
             {amount = 40, resultSprite = "h3_pallet_17_9"},
             {amount = 44, resultSprite = "h3_pallet_17_10"},
             {amount = 48, resultSprite = "h3_pallet_17_11"},
-        },
-    },
-    {
-        items = { "Base.SheetMetal", },
-        icon = "Item_SheetMetal.png",
-        category = "Material",
-        stages = {
-            {amount =  0, resultSprite = keys.vEmptyPallet},
-            {amount =  4, resultSprite = "h3_pallet_18_0"},
-            {amount =  8, resultSprite = "h3_pallet_18_1"},
-            {amount = 12, resultSprite = "h3_pallet_18_2"},
-            {amount = 16, resultSprite = "h3_pallet_18_3"},
-            {amount = 20, resultSprite = "h3_pallet_18_4"},
-            {amount = 24, resultSprite = "h3_pallet_18_5"},
-            {amount = 28, resultSprite = "h3_pallet_18_6"},
-            {amount = 32, resultSprite = "h3_pallet_18_7"},
-            {amount = 36, resultSprite = "h3_pallet_18_8"},
-            {amount = 40, resultSprite = "h3_pallet_18_9"},
-            {amount = 44, resultSprite = "h3_pallet_18_10"},
-            {amount = 48, resultSprite = "h3_pallet_18_11"},
-            {amount = 52, resultSprite = "h3_pallet_18_12"},
-            {amount = 56, resultSprite = "h3_pallet_18_13"},
-            {amount = 60, resultSprite = "h3_pallet_18_14"},
-            {amount = 64, resultSprite = "h3_pallet_18_15"},
-            {amount = 68, resultSprite = "h3_pallet_18_16"},
-            {amount = 72, resultSprite = "h3_pallet_18_17"},
         },
     },
     {
@@ -564,6 +539,11 @@ local items = {
             "Base.Coke"
         },
         icon = "Item_Charcoal.png",
+        multiIcons = {
+            ["Base.Charcoal"]         = "Item_Charcoal",
+            ["Base.CharcoalCrafted"]  = "Item_WoodCharcoal",
+            ["Base.Coke"]             = "Item_CokeCoal",
+        },
         category = "Fuel",
         stages = {
             {amount =   0, resultSprite = keys.vEmptyPallet},
@@ -585,42 +565,6 @@ local items = {
             {amount = 192, resultSprite = "h3_pallet_21_15"},
             {amount = 204, resultSprite = "h3_pallet_21_16"},
             {amount = 216, resultSprite = "h3_pallet_21_17"},
-        },
-    },
-    {
-        items = {
-            "Base.308Carton",
-            "Base.556Carton",
-            "Base.3030Carton",
-            "Base.Bullets357Carton",
-            "Base.Bullets38Carton",
-            "Base.Bullets44Carton",
-            "Base.Bullets45Carton",
-            "Base.Bullets9mmCarton",
-            "Base.ShotgunShellsCarton",
-        },
-        icon = "Item_AmmoCase.png",
-        category = "Ammo",
-        stages = {
-            {amount =  0, resultSprite = keys.vEmptyPallet},
-            {amount =  1, resultSprite = "h3_pallet_22_0"},
-            {amount =  2, resultSprite = "h3_pallet_22_1"},
-            {amount =  3, resultSprite = "h3_pallet_22_2"},
-            {amount =  4, resultSprite = "h3_pallet_22_3"},
-            {amount =  5, resultSprite = "h3_pallet_22_4"},
-            {amount =  6, resultSprite = "h3_pallet_22_5"},
-            {amount =  7, resultSprite = "h3_pallet_22_6"},
-            {amount =  8, resultSprite = "h3_pallet_22_7"},
-            {amount =  9, resultSprite = "h3_pallet_22_8"},
-            {amount = 10, resultSprite = "h3_pallet_22_9"},
-            {amount = 11, resultSprite = "h3_pallet_22_10"},
-            {amount = 12, resultSprite = "h3_pallet_22_11"},
-            {amount = 13, resultSprite = "h3_pallet_22_12"},
-            {amount = 14, resultSprite = "h3_pallet_22_13"},
-            {amount = 15, resultSprite = "h3_pallet_22_14"},
-            {amount = 16, resultSprite = "h3_pallet_22_15"},
-            {amount = 17, resultSprite = "h3_pallet_22_16"},
-            {amount = 18, resultSprite = "h3_pallet_22_17"},
         },
     },
     {
@@ -653,6 +597,32 @@ local items = {
             {amount = 48, resultSprite = "h3_pallet_24_5"},
             {amount = 56, resultSprite = "h3_pallet_24_6"},
             {amount = 64, resultSprite = "h3_pallet_24_7"},
+        },
+    },
+    {
+        items = { "Base.SheetMetal", },
+        icon = "Item_SheetMetal.png",
+        category = "Material",
+        stages = {
+            {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount =  4, resultSprite = "h3_pallet_18_0"},
+            {amount =  8, resultSprite = "h3_pallet_18_1"},
+            {amount = 12, resultSprite = "h3_pallet_18_2"},
+            {amount = 16, resultSprite = "h3_pallet_18_3"},
+            {amount = 20, resultSprite = "h3_pallet_18_4"},
+            {amount = 24, resultSprite = "h3_pallet_18_5"},
+            {amount = 28, resultSprite = "h3_pallet_18_6"},
+            {amount = 32, resultSprite = "h3_pallet_18_7"},
+            {amount = 36, resultSprite = "h3_pallet_18_8"},
+            {amount = 40, resultSprite = "h3_pallet_18_9"},
+            {amount = 44, resultSprite = "h3_pallet_18_10"},
+            {amount = 48, resultSprite = "h3_pallet_18_11"},
+            {amount = 52, resultSprite = "h3_pallet_18_12"},
+            {amount = 56, resultSprite = "h3_pallet_18_13"},
+            {amount = 60, resultSprite = "h3_pallet_18_14"},
+            {amount = 64, resultSprite = "h3_pallet_18_15"},
+            {amount = 68, resultSprite = "h3_pallet_18_16"},
+            {amount = 72, resultSprite = "h3_pallet_18_17"},
         },
     },
     {
@@ -759,7 +729,215 @@ local items = {
             {amount = 72, resultSprite = "h3_pallet_28_17"},
         },
     },
+    {
+        items = {
+            "Base.PaintBlack",
+            "Base.PaintBlue",
+            "Base.PaintBrown",
+            "Base.PaintCyan",
+            "Base.PaintGreen",
+            "Base.PaintGrey",
+            "Base.PaintLightBlue",
+            "Base.PaintLightBrown",
+            "Base.PaintOrange",
+            "Base.PaintPink",
+            "Base.PaintPurple",
+            "Base.PaintRed",
+            "Base.PaintTurquoise",
+            "Base.PaintWhite",
+            "Base.PaintYellow",
+        },
+        icon = "Item_Paintbucket_Empty.png",
+        multiIcons = {
+            ["Base.PaintBlack"]       = "Item_Paint_Black",
+            ["Base.PaintBlue"]        = "Item_Paint_Blue",
+            ["Base.PaintBrown"]       = "Item_Paint_Brown",
+            ["Base.PaintCyan"]        = "Item_Paint_Cyan",
+            ["Base.PaintGreen"]       = "Item_Paint_Green",
+            ["Base.PaintGrey"]        = "Item_Paint_Grey",
+            ["Base.PaintLightBlue"]   = "Item_Paint_LightBlue",
+            ["Base.PaintLightBrown"]  = "Item_Paint_LightBrown",
+            ["Base.PaintOrange"]      = "Item_Paint_Orange",
+            ["Base.PaintPink"]        = "Item_Paint_Pink",
+            ["Base.PaintPurple"]      = "Item_Paint_Purple",
+            ["Base.PaintRed"]         = "Item_Paint_Red",
+            ["Base.PaintTurquoise"]   = "Item_Paint_Turquoise",
+            ["Base.PaintWhite"]       = "Item_Paint_White",
+            ["Base.PaintYellow"]      = "Item_Paint_Yellow",
+        },
+        category = "Paint",
+        stages = {
+            {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount =  1, resultSprite = "h3_pallet_30_0"},
+            {amount =  2, resultSprite = "h3_pallet_30_1"},
+            {amount =  3, resultSprite = "h3_pallet_30_2"},
+            {amount =  4, resultSprite = "h3_pallet_30_3"},
+            {amount =  5, resultSprite = "h3_pallet_30_4"},
+            {amount =  6, resultSprite = "h3_pallet_30_5"},
+            {amount =  7, resultSprite = "h3_pallet_30_6"},
+            {amount =  8, resultSprite = "h3_pallet_30_7"},
+            {amount =  9, resultSprite = "h3_pallet_30_8"},
+            {amount = 10, resultSprite = "h3_pallet_30_9"},
+            {amount = 11, resultSprite = "h3_pallet_30_10"},
+            {amount = 12, resultSprite = "h3_pallet_30_11"},
+            {amount = 13, resultSprite = "h3_pallet_30_12"},
+            {amount = 14, resultSprite = "h3_pallet_30_13"},
+            {amount = 15, resultSprite = "h3_pallet_30_14"},
+            {amount = 16, resultSprite = "h3_pallet_30_15"},
+        },
+    },
+    {
+        items = {
+            "Base.Fertilizer",
+            "Base.CompostBag",
+        },
+        icon = "Item_TZ_IndieStoneNPK.png",
+        multiIcons = {
+            ["Base.Fertilizer"]  = "Item_TZ_IndieStoneNPK",
+            ["Base.CompostBag"]  = "Item_Compost",
+        },
+        category = "Bag",
+        stages = {
+            {amount =  0, resultSprite = keys.vEmptyPallet},
+            {amount =  1, resultSprite = "h3_pallet_32_0"},
+            {amount =  2, resultSprite = "h3_pallet_32_1"},
+            {amount =  3, resultSprite = "h3_pallet_32_2"},
+            {amount =  4, resultSprite = "h3_pallet_32_3"},
+            {amount =  5, resultSprite = "h3_pallet_32_4"},
+            {amount =  6, resultSprite = "h3_pallet_32_5"},
+            {amount =  7, resultSprite = "h3_pallet_32_6"},
+            {amount =  8, resultSprite = "h3_pallet_32_7"},
+            {amount =  9, resultSprite = "h3_pallet_32_8"},
+            {amount = 10, resultSprite = "h3_pallet_32_9"},
+            {amount = 11, resultSprite = "h3_pallet_32_10"},
+            {amount = 12, resultSprite = "h3_pallet_32_11"},
+            {amount = 13, resultSprite = "h3_pallet_32_12"},
+            {amount = 14, resultSprite = "h3_pallet_32_13"},
+            {amount = 15, resultSprite = "h3_pallet_32_14"},
+            {amount = 16, resultSprite = "h3_pallet_32_15"},
+            {amount = 17, resultSprite = "h3_pallet_32_16"},
+            {amount = 18, resultSprite = "h3_pallet_32_17"},
+        },
+    },
 }
+
+local boxTable =
+{
+    items = {
+        "Base.SteelBarHalfBox",
+        "Base.SteelBarQuarterBox",
+        "Base.SteelRodHalfBox",
+        "Base.SteelRodQuarterBox",
+        "Base.SteelBlockBox",
+        "Base.SteelChunkBox",
+        "Base.SteelPieceBox",
+        "Base.SteelScrapBox",
+        "Base.SmallSheetMetalBox",
+        "Base.UnusableMetalBox",
+        "Base.IronBarHalfBox",
+        "Base.IronBarQuarterBox",
+        "Base.MetalPipe_BrokenBox",
+        "Base.IronBandBox",
+        "Base.IronBandSmallBox",
+        "Base.IronBlockBox",
+        "Base.IronChunkBox",
+        "Base.IronPieceBox",
+        "Base.IronScrapBox",
+        "Base.ScrapMetalBox",
+        "Base.EnginePartsBox",
+        "Base.NutsBoltsBox",
+        "Base.ElectricWireBox",
+        "Base.ElectronicsScrapBox",
+        "Base.AluminumFragmentsBox",
+        "Base.AluminumScrapBox",
+        "Base.CopperScrapBox",
+    },
+    icon = "media/textures/Item_CardBoard.png",
+    category = "Box",
+    stages = {
+        {amount =  0, resultSprite = keys.vEmptyPallet},
+        {amount =  1, resultSprite = "h3_pallet_31_0"},
+        {amount =  2, resultSprite = "h3_pallet_31_1"},
+        {amount =  3, resultSprite = "h3_pallet_31_2"},
+        {amount =  4, resultSprite = "h3_pallet_31_3"},
+        {amount =  5, resultSprite = "h3_pallet_31_4"},
+        {amount =  6, resultSprite = "h3_pallet_31_5"},
+        {amount =  7, resultSprite = "h3_pallet_31_6"},
+        {amount =  8, resultSprite = "h3_pallet_31_7"},
+        {amount =  9, resultSprite = "h3_pallet_31_8"},
+        {amount = 10, resultSprite = "h3_pallet_31_9"},
+        {amount = 11, resultSprite = "h3_pallet_31_10"},
+        {amount = 12, resultSprite = "h3_pallet_31_11"},
+    },
+}
+
+local ammoCartonTable =
+{
+    items = {
+        "Base.308Carton",
+        "Base.556Carton",
+        "Base.3030Carton",
+        "Base.Bullets357Carton",
+        "Base.Bullets38Carton",
+        "Base.Bullets44Carton",
+        "Base.Bullets45Carton",
+        "Base.Bullets9mmCarton",
+        "Base.ShotgunShellsCarton",
+    },
+    icon = "Item_AmmoCase.png",
+    multiIcons = {
+        ["Base.308Carton"]            = "Item_Parcel_Medium_Ammo",
+        ["Base.556Carton"]            = "Item_Parcel_Medium_Military",
+        ["Base.3030Carton"]           = "Item_Parcel_Medium_Ammo",
+        ["Base.Bullets357Carton"]     = "Item_Parcel_Medium_Ammo",
+        ["Base.Bullets38Carton"]      = "Item_Parcel_Medium_Ammo",
+        ["Base.Bullets44Carton"]      = "Item_Parcel_Medium_Ammo",
+        ["Base.Bullets45Carton"]      = "Item_Parcel_Medium_Ammo",
+        ["Base.Bullets9mmCarton"]     = "Item_Parcel_Medium_Ammo",
+        ["Base.ShotgunShellsCarton"]  = "Item_Parcel_Medium_Ammo",
+    },
+    category = "Ammo",
+    stages = {
+        {amount =  0, resultSprite = keys.vEmptyPallet},
+        {amount =  1, resultSprite = "h3_pallet_22_0"},
+        {amount =  2, resultSprite = "h3_pallet_22_1"},
+        {amount =  3, resultSprite = "h3_pallet_22_2"},
+        {amount =  4, resultSprite = "h3_pallet_22_3"},
+        {amount =  5, resultSprite = "h3_pallet_22_4"},
+        {amount =  6, resultSprite = "h3_pallet_22_5"},
+        {amount =  7, resultSprite = "h3_pallet_22_6"},
+        {amount =  8, resultSprite = "h3_pallet_22_7"},
+        {amount =  9, resultSprite = "h3_pallet_22_8"},
+        {amount = 10, resultSprite = "h3_pallet_22_9"},
+        {amount = 11, resultSprite = "h3_pallet_22_10"},
+        {amount = 12, resultSprite = "h3_pallet_22_11"},
+        {amount = 13, resultSprite = "h3_pallet_22_12"},
+        {amount = 14, resultSprite = "h3_pallet_22_13"},
+        {amount = 15, resultSprite = "h3_pallet_22_14"},
+        {amount = 16, resultSprite = "h3_pallet_22_15"},
+        {amount = 17, resultSprite = "h3_pallet_22_16"},
+        {amount = 18, resultSprite = "h3_pallet_22_17"},
+    },
+}
+
+-- ============================================================================
+-- Modded Items Compatibility
+-- ============================================================================
+
+if getActivatedMods():contains("BlacksmithingforMP") then
+    table.insert(items, 1, boxTable)
+end
+
+if getActivatedMods():contains("VFExpansion1") then
+    table.insert(ammoCartonTable.items, "Base.762Carton")
+    table.insert(ammoCartonTable.items, "Base.223Carton")
+    table.insert(ammoCartonTable.items, "Base.22Carton")
+    ammoCartonTable.multiIcons["Base.762Carton"] = "Item_Parcel_Medium_Military"
+    ammoCartonTable.multiIcons["Base.223Carton"] = "Item_Parcel_Medium_Ammo"
+    ammoCartonTable.multiIcons["Base.22Carton"]  = "Item_Parcel_Medium_Ammo"
+end
+
+table.insert(items, ammoCartonTable)
 
 -- ============================================================================
 -- Vanilla pallet resolver section

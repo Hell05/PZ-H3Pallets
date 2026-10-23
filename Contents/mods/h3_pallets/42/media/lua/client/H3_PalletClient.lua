@@ -88,7 +88,13 @@ local function UI_CreateItemOption(self, subMenu, data, stage, mode, amount, act
         propertyData,
         mode
         )
-    itemOption.iconTexture = getTexture(data.icon)
+
+    -- assign item icon
+    local icon = data.icon
+    if data.multiIcons then
+        icon = data.multiIcons[propertyData.type] or data.icon
+    end
+    itemOption.iconTexture = getTexture(icon)
 
     if propertyData.count then
         if amount > propertyData.count then
@@ -192,7 +198,23 @@ local function CreateEmpty_PalletMenus(self, categoryMenus, data, propertyData)
     if not nextStage then return end
 
     local category = data.category or "Other"
-    local categoryMenu = UI_GetOrCreateSubMenu(self.palletMenu, categoryMenus, "H3_PalletCategory_Add_" .. category)
+    local categoryMenu = UI_GetOrCreateSubMenu(self.palletMenu, categoryMenus, "H3_PalletCategory_Add_" .. category, data.icon)
+
+    -- subMenus for the Boxed Items
+    if category == "Box" then
+        local fullType = propertyData.type
+        local boxCategory = "BoxOther"
+        local boxIcon = "Item_ElectronicsScrap.png"
+        if fullType:find("Steel") or fullType:find("SheetMetal") or fullType:find("UnusableMetal") then
+            boxCategory = "BoxSteel"
+            boxIcon = "Item_SteelScrap.png"
+        elseif fullType:find("Iron") or fullType:find("Pipe_Broken") or fullType:find("ScrapMetal") then
+            boxCategory = "BoxIron"
+            boxIcon = "Item_IronScrap.png"
+        end
+        categoryMenu = UI_GetOrCreateSubMenu(categoryMenu, categoryMenus, "H3_PalletCategory_Add_" .. boxCategory, boxIcon)
+    end
+
     local addAmount = nextStage.amount - self.movableData.total
     UI_CreateItemOption(self, categoryMenu, data, nextStage, "AddItem", addAmount, "H3_PalletItem_Add", propertyData)
 
@@ -212,18 +234,32 @@ local function CreateAdd_PalletMenu(self, actionMenus, data, propertyData)
     local nextStage = GetStage("Next", data, self.movableData.total)
     if not nextStage then return end
 
-    if not actionMenus.Add then
-        actionMenus.Add = UI_GetOrCreateSubMenu(self.palletMenu, actionMenus, "H3_PalletAction_Add")
+    local actionMenu = UI_GetOrCreateSubMenu(self.palletMenu, actionMenus, "H3_PalletAction_Add", "media/ui/Moodle_internal_plus_green.png")
+
+    -- subMenus for the Boxed Items
+    local category = data.category or "Other"
+    if category == "Box" then
+        local fullType = propertyData.type
+        local boxCategory = "BoxOther"
+        local boxIcon = "Item_ElectronicsScrap.png"
+        if fullType:find("Steel") or fullType:find("SheetMetal") or fullType:find("UnusableMetal") then
+            boxCategory = "BoxSteel"
+            boxIcon = "Item_SteelScrap.png"
+        elseif fullType:find("Iron") or fullType:find("Pipe_Broken") or fullType:find("ScrapMetal") then
+            boxCategory = "BoxIron"
+            boxIcon = "Item_IronScrap.png"
+        end
+        actionMenu = UI_GetOrCreateSubMenu(actionMenu, actionMenus, "H3_PalletCategory_Add_" .. boxCategory, boxIcon)
     end
 
     local addAmount = nextStage.amount - self.movableData.total
-    UI_CreateItemOption(self, actionMenus.Add, data, nextStage, "AddItem", addAmount, "H3_PalletItem_Add", propertyData)
+    UI_CreateItemOption(self, actionMenu, data, nextStage, "AddItem", addAmount, "H3_PalletItem_Add", propertyData)
 
     -- if pallet has more than 1 nextStage left then create an AddAll option
     local highestStage = GetHighestAvailableStage(propertyData.count, data.stages, self.movableData.total)
     if highestStage and highestStage.amount > nextStage.amount then
         local addAllAmount = highestStage.amount - self.movableData.total
-        UI_CreateItemOption(self, actionMenus.Add, data, highestStage, "AddItem", addAllAmount, "H3_PalletItem_AddAll", propertyData)
+        UI_CreateItemOption(self, actionMenu, data, highestStage, "AddItem", addAllAmount, "H3_PalletItem_AddAll", propertyData)
     end
 end
 
@@ -236,7 +272,7 @@ local function CreateRemove_PalletMenu(self, actionMenus, data, propertyData)
     if not previousStage then return end
 
     if not actionMenus.Remove then
-        actionMenus.Remove = UI_GetOrCreateSubMenu(self.palletMenu, actionMenus, "H3_PalletAction_Remove")
+        actionMenus.Remove = UI_GetOrCreateSubMenu(self.palletMenu, actionMenus, "H3_PalletAction_Remove", "media/ui/Moodle_internal_minus_red.png")
     end
 
     local removeAmount = self.movableData.total - previousStage.amount

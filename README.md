@@ -35,6 +35,15 @@ Items stackable on pallets:
 - Ammo Cartons
 - Fuel (Coal, Charcoal, Coke)
 - Bricks
+- Stone Blocks
+- Fertiliser and Compost Bags
+- Paint Cans
+- Steel Bars and Rods
+- Iron Bars and Pipes
+
+Added compatibility for VFExpansion1 ammo Cartons
+Added compatibility for BlacksmithingforMP boxed items
+
 
 New logic client side is as follows:
 - ClickHook -> palletMenu onto the right click context menu when there is a valid sprite in square clicked
