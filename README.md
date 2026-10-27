@@ -21,6 +21,9 @@ Since this mod adds tiles removing it mid save is not recommended!
 Fully MP compatible! Server authoritative logic that has been tested on a dedicated server.
 Unlikely to be compatible with other Pallet mods that rely on or modify the vanilla ISTakeBricks TimedAction.
 
+ToDo:
+- Add Everything, Remove Everything options
+- Sort list of items with conditions for take menu not just add.
 
 Items stackable on pallets:
 - All ingots
